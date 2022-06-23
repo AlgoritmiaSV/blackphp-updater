@@ -32,6 +32,12 @@ production=/store/blackphp/production/$1
 # Todos los lanzamientos. En esta carpeta estarán los archivos zip de cada vez que se ejecute el script
 releases=/store/blackphp/releases/$1
 
+# Comprobar si existe la carpeta origen
+if [ ! -d $source ]; then
+	echo "Project $1 not exists!"
+	exit 1
+fi
+
 # Sincronización de archivos no sujetos a minificación, como las imágenes, fuentes, y archivos que previamente hayan sido minificados
 echo "    Syncing..."
 rsync -crv --delete --chown=fajardo:fajardo --chmod=D755,F644 --exclude ".git" --exclude ".gitignore" --exclude "companies/" --exclude "entities/" --exclude "db/historical/" --exclude "docs/" --include "default_config.php" --exclude "*.php" --include "public/scripts/*.min.js" --exclude "public/scripts/*" --exclude "*.html" --include "*.min.css" --exclude "*.css" $source/ $production/

@@ -11,23 +11,14 @@
 declare -A titles
 titles[blackphp]="Black PHP"
 titles[negkit]=NegKit
-titles[sicoim]=SICOIM
+titles[sicoimWebApp]=SICOIM
 titles[acrossdesk]="Across Desk"
 titles[mimakit]=MimaKit
-titles[velnet21]="VELNET 21 Web App"
-
-# Carpeta en donde se guardará la información de cada proyecto
-declare -A folders
-folders[blackphp]=blackphp
-folders[negkit]=negkit
-folders[sicoim]=sicoimWebApp
-folders[acrossdesk]=acrossdesk
-folders[mimakit]=mimakit
-folders[velnet21]=velnet21WebApp
+titles[velnet21WebApp]="VELNET 21 Web App"
 
 # Si no se le ha pasado ningún parámetro, entonces se ejecuta con todos los proyectos definidos en los arreglos.
 if [ "$#" = "0" ]; then
-	for folder in ${!folders[@]}
+	for folder in ${!titles[@]}
 	do
 		$0 $folder
 	done
@@ -35,11 +26,11 @@ if [ "$#" = "0" ]; then
 fi
 
 # Compueba que el nombre de la carpeta pasada por parámetro exista en el arrego $titles, y si es así, se genera la documentación, de lo contrario devuelve un error.
+echo "------------ Generating documentation for $1"
 if [ -v titles[$1] ]; then
-	echo "------------ Generating documentation for ${titles[$1]}"
-	phpdoc -d /store/Clouds/Mega/www/${folders[$1]}/ -t /store/blackphp/documentation/${folders[$1]}/ -i vendor/ -i plugins/ --title "${titles[$1]}" --setting="guides.enabled=true"
+	phpdoc -d /store/Clouds/Mega/www/$1/ -t /store/blackphp/documentation/$1/ -i vendor/ -i plugins/ --title "${titles[$1]}" --setting="guides.enabled=true"
 else
-	echo "    Error: $1 NOT EXISTS"
+	echo "Error: $1 NOT EXISTS"
 fi
 
 # (Sólo en Linux) Deben actualizarse los permisos de la documentación generada para que sea accesible por el usuario que inicia sesión en la interfaz gráfica.

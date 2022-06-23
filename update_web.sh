@@ -19,6 +19,6 @@ $path/minify_js.sh
 $path/blackphp.sh
 $path/mysqldump.sh
 $path/language.sh
-$path/phpdoc.sh
+# $path/phpdoc.sh
 #cd /home/fajardo
 ./init.sh -p
