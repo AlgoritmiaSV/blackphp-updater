@@ -14,7 +14,6 @@ titles[negkit]=NegKit
 titles[sicoimWebApp]=SICOIM
 titles[acrossdesk]="Across Desk"
 titles[mimakit]=MimaKit
-titles[velnet21WebApp]="VELNET 21 Web App"
 
 # Si no se le ha pasado ningún parámetro, entonces se ejecuta con todos los proyectos definidos en los arreglos.
 if [ "$#" = "0" ]; then

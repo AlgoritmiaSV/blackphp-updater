@@ -6,7 +6,6 @@ databases[negkit]=negkit
 databases[sicoimWebApp]=sicoim
 databases[acrossdesk]=acrossdesk
 databases[mimakit]=mimakit
-databases[velnet21WebApp]=velnet21
 
 # Posibles tipos de columna en la base de datos (Se deben registrar las faltantes)
 declare -A types
@@ -119,7 +118,7 @@ for folder in "$@"; do
 		done
 
 		#Sincronizar
-		rsync -crv --delete /store/blackphp/orm/$folder/ /store/Clouds/Mega/www/$folder/models/orm/
+		rsync -cr --delete --info=NAME1 /store/blackphp/orm/$folder/ /store/Clouds/Mega/www/$folder/models/orm/
 	else
 		echo "Project $1 not exists"
 	fi

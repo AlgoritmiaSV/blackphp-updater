@@ -7,7 +7,7 @@
 # gettext
 
 #Lista de proyectos
-projects=(blackphp negkit sicoimWebApp acrossdesk mimakit velnet21WebApp)
+projects=(blackphp negkit sicoimWebApp acrossdesk mimakit)
 #Lista de idiomas regionales
 locales=(es_ES en_US)
 for project in "${projects[@]}"; do

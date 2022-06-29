@@ -15,7 +15,7 @@ fi
 
 # Si no se especifica un parámetro, se realiza una versión de lanzamiento de cada proyecto
 if [ "$#" = "0" ]; then
-	for folder in acrossdesk mimakit negkit sicoimWebApp velnet21WebApp
+	for folder in acrossdesk mimakit negkit sicoimWebApp
 	do
 		$0 $folder
 	done
@@ -40,7 +40,7 @@ fi
 
 # Sincronización de archivos no sujetos a minificación, como las imágenes, fuentes, y archivos que previamente hayan sido minificados
 echo "    Syncing..."
-rsync -crv --delete --chown=fajardo:fajardo --chmod=D755,F644 --exclude ".git" --exclude ".gitignore" --exclude "companies/" --exclude "entities/" --exclude "db/historical/" --exclude "docs/" --include "default_config.php" --exclude "*.php" --include "public/scripts/*.min.js" --exclude "public/scripts/*" --exclude "*.html" --include "*.min.css" --exclude "*.css" $source/ $production/
+rsync -cr --delete --chown=fajardo:fajardo --chmod=D755,F644 --exclude ".git" --exclude ".gitignore" --exclude "companies/" --exclude "entities/" --exclude "db/historical/" --exclude "docs/" --include "default_config.php" --exclude "*.php" --include "public/scripts/*.min.js" --exclude "public/scripts/*" --exclude "*.html" --include "*.min.css" --exclude "*.css" --info=NAME1 $source/ $production/
 
 # Minificación y copia de archivos PHP
 echo "    Minifying PHP..."

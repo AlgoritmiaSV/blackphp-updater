@@ -8,7 +8,7 @@
 
 # Se comprueba que se haya pasado por parámetro el nombre de la carpeta con la cual se quiere sincronizar, de lo contrario, sincronizará con una lista definida.
 if [ "$#" = "0" ]; then
-	for folder in negkit sicoimWebApp acrossdesk mimakit velnet21WebApp
+	for folder in negkit sicoimWebApp acrossdesk mimakit
 	do
 		echo "------------ RSYNC BlackPHP > $folder"
 		$0 $folder
@@ -34,7 +34,7 @@ else
 	files=`rsync -avn --stats --exclude ".git/" --exclude "db/" --include "controllers/devUtils.php" --include "controllers/error.php" --exclude "controllers/*" --exclude "public/icons" --exclude "public/images" --exclude "favicon.ico" --exclude "models/" --exclude "README.md" --exclude "views/" --exclude ".gitignore" --exclude "entities/" --exclude "locale/" blackphp/ $1/ | grep "files transferred" | cut -c 38-`
 	# Si la cantidad de archivos a transferir es mayor que cero, realiza la sincronización, de lo contrario, imprime "Up to date".
 	if [ $files -gt "0" ]; then
-		rsync -av --exclude ".git/" --exclude "db/" --include "controllers/devUtils.php" --include "controllers/error.php" --exclude "controllers/*" --exclude "public/icons" --exclude "public/images" --exclude "favicon.ico" --exclude "models/" --exclude "README.md" --exclude "views/" --exclude ".gitignore" --exclude "entities/" --exclude "locale/" blackphp/ $1/
+		rsync -a --exclude ".git/" --exclude "db/" --include "controllers/devUtils.php" --include "controllers/error.php" --exclude "controllers/*" --exclude "public/icons" --exclude "public/images" --exclude "favicon.ico" --exclude "models/" --exclude "README.md" --exclude "views/" --exclude ".gitignore" --exclude "entities/" --exclude "locale/" --info=NAME1 blackphp/ $1/
 	else
 		echo "    Up to date";
 	fi
