@@ -96,7 +96,6 @@ for folder in "$@"; do
 					echo " $column_comment */" | sed 's/_/\ /g' >> $file
 					echo -e "\tprivate \$$column_name;" >> $file
 					echo "" >> $file
-					continue
 				fi
 			done
 
@@ -133,28 +132,66 @@ for folder in "$@"; do
 			# Métodos públicos para el acceso a las propiedades.
 			# En los setters está pensado realizar validaciones según el tipo de datos,
 			# pero esto aún no está incluído en esta edición.
+			column_name=""
+			column_type=""
 			for column_data in $columns; do
 				if [ $column_position -eq 0 ]; then
-					echo "" >> $file
-					echo -e "\tpublic function get${column_data^}()" >> $file
-					echo -e "\t{" >> $file
-					echo -e "\t\treturn \$this->$column_data;" >> $file
-					echo -e "\t}" >> $file
-					echo -e "" >> $file
-					echo -e "\tpublic function set${column_data^}(\$value)" >> $file
-					echo -e "\t{" >> $file
-					echo -e "\t\t\$this->$column_data = \$value;" >> $file
-					echo -e "\t}" >> $file
+					column_name=$column_data
 					((column_position=column_position+1))
 					continue
 				fi
 				if [ $column_position -eq 1 ]; then
+					column_type=$column_data
 					((column_position=column_position+1))
 					continue
 				fi
 				if [ $column_position -eq 2 ]; then
+					echo "" >> $file
+					echo -e "\tpublic function get${column_name^}()" >> $file
+					echo -e "\t{" >> $file
+					echo -e "\t\treturn \$this->$column_name;" >> $file
+					echo -e "\t}" >> $file
+					echo -e "" >> $file
+					echo -e "\tpublic function set${column_name^}(\$value)" >> $file
+					echo -e "\t{" >> $file
+					echo -e "\t\t\$this->$column_name = (${types[$column_type]})\$value;" >> $file
+					echo -e "\t}" >> $file
 					column_position=0
+				fi
+			done
+
+			# Llaves foráneas
+			keys=`mysql --skip-column-names -u root -pldi14517 -e "SELECT TABLE_NAME, COLUMN_NAME,CONSTRAINT_NAME, REFERENCED_COLUMN_NAME FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE REFERENCED_TABLE_SCHEMA = '${databases[$folder]}' AND REFERENCED_TABLE_NAME = '$table' GROUP BY TABLE_NAME"`
+			column_position=0
+			table_name=""
+			column_name=""
+			constraint_name=""
+			referenced_column_name=""
+			for key_data in $keys; do
+				if [ $column_position -eq 0 ]; then
+					table_name=$key_data
+					((column_position=column_position+1))
 					continue
+				fi
+				if [ $column_position -eq 1 ]; then
+					column_name=$key_data
+					((column_position=column_position+1))
+					continue
+				fi
+				if [ $column_position -eq 2 ]; then
+					constraint_name=$key_data
+					((column_position=column_position+1))
+					continue
+				fi
+				if [ $column_position -eq 3 ]; then
+					referenced_column_name=$key_data
+					echo "" >> $file
+					echo -e "\tpublic function $table_name()" >> $file
+					echo -e "\t{" >> $file
+					echo -e "\t\t$table_name::flush();" >> $file
+					echo -e "\t\treturn $table_name::where(\"$column_name\", \$this->$referenced_column_name);" >> $file
+					echo -e "\t}" >> $file
+					column_position=0
 				fi
 			done
 
