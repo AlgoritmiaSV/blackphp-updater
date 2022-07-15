@@ -19,6 +19,8 @@ types[smalltext]=string
 types[tinytext]=string
 types[date]=string
 types[datetime]=string
+types[time]=string
+types[year]=int
 types[float]=float
 types[decimal]=float
 
@@ -47,20 +49,6 @@ for folder in "$@"; do
 			echo "class "$table"_model" >> $file
 			echo "{" >> $file
 			echo -e "\tuse ORM;" >> $file
-			echo "" >> $file
-
-			#Propiedades generales
-			echo -e "\t/** @var string \$_table_name Nombre de la tabla */" >> $file
-			echo -e "\tprivate \$_table_name;" >> $file
-			echo "" >> $file
-			echo -e "\t/** @var string \$_primary_key Llave primaria */" >> $file
-			echo -e "\tprivate \$_primary_key;" >> $file
-			echo "" >> $file
-			echo -e "\t/** @var bool \$_timestamps La tabla usa marcas de tiempo para la inserción y edición de datos */" >> $file
-			echo -e "\tprivate \$_timestamps;" >> $file
-			echo "" >> $file
-			echo -e "\t/** @var bool \$_soft_delete La tabla soporta borrado suave */" >> $file
-			echo -e "\tprivate \$_soft_delete;" >> $file
 			echo "" >> $file
 
 			# Consultando columnas y creando propiedades
@@ -105,29 +93,30 @@ for folder in "$@"; do
 				timestamps=true
 			fi
 
-			# Constructor de la clase (Inicializa las variables generales)
-			# Todavía se está considerando incluir estas variables generales en una clase base.
-			echo -e "\t/**" >> $file
-			echo -e "\t * Constructor de la clase" >> $file
-			echo -e "\t * " >> $file
-			echo -e "\t * Inicializa las propiedades generales de la tabla" >> $file
-			echo -e "\t */" >> $file
-			echo -e "\tpublic function __construct()" >> $file
-			echo -e "\t{" >> $file
 			
+			#Propiedades generales
+
 			# Establece el nombre de la tabla
-			echo -e "\t\t\$this->_table_name = \"$table\";" >> $file
+			echo "" >> $file
+			echo -e "\t/** @var string \$_table_name Nombre de la tabla */" >> $file
+			echo -e "\tprivate static \$_table_name = \"$table\";" >> $file
 
 			# Establece el nombre de la llave foránea. (Funciona sólo para llaves primarias de un
 			# solo campo).
-			echo -e "\t\t\$this->_primary_key = \"`mysql --skip-column-names -u root -pldi14517 -e "select column_name from information_schema.KEY_COLUMN_USAGE where CONSTRAINT_NAME = 'PRIMARY' AND TABLE_SCHEMA='${databases[$folder]}' AND TABLE_NAME='$table' LIMIT 1"`\";" >> $file
+			echo "" >> $file
+			echo -e "\t/** @var string \$_primary_key Llave primaria */" >> $file
+			echo -e "\tprivate static \$_primary_key = \"`mysql --skip-column-names -u root -pldi14517 -e "select column_name from information_schema.KEY_COLUMN_USAGE where CONSTRAINT_NAME = 'PRIMARY' AND TABLE_SCHEMA='${databases[$folder]}' AND TABLE_NAME='$table' LIMIT 1"`\";" >> $file
 
 			# Determina si la tabla soporta timestamps (creation_user, creation_time, edition_user y edition_time)
-			echo -e "\t\t\$this->_timestamps = $timestamps;" >> $file
+			echo "" >> $file
+			echo -e "\t/** @var bool \$_timestamps La tabla usa marcas de tiempo para la inserción y edición de datos */" >> $file
+			echo -e "\tprivate static \$_timestamps = $timestamps;" >> $file
 
 			# Determina si la tabla soporta borrado suave (Se necesita un campo de estado $status)
-			echo -e "\t\t\$this->_soft_delete = $soft_delete;" >> $file
-			echo -e "\t}" >> $file
+			echo "" >> $file
+			echo -e "\t/** @var bool \$_soft_delete La tabla soporta borrado suave */" >> $file
+			echo -e "\tprivate static \$_soft_delete = $soft_delete;" >> $file
+			echo "" >> $file
 
 			# Métodos públicos para el acceso a las propiedades.
 			# En los setters está pensado realizar validaciones según el tipo de datos,
