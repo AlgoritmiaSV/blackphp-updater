@@ -53,7 +53,7 @@ for folder in "$@"; do
 
 			# Consultando columnas y creando propiedades
 			# Esta consulta obtiene resultados en tres columnas
-			columns=`mysql --skip-column-names -u root -pldi14517 -e "SELECT COLUMN_NAME, DATA_TYPE, IF(COLUMN_COMMENT = '', '-', REPLACE(COLUMN_COMMENT, ' ', '_')) AS COMMENT FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '${databases[$folder]}' AND TABLE_NAME = '$table'"`
+			columns=`mysql --skip-column-names -u root -pldi14517 -e "SELECT COLUMN_NAME, DATA_TYPE, IF(COLUMN_COMMENT = '', '-', REPLACE(COLUMN_COMMENT, ' ', '_')) AS COMMENT, COLUMN_DEFAULT FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '${databases[$folder]}' AND TABLE_NAME = '$table'"`
 			column_position=0
 			column_name=""
 			column_type=""
@@ -79,6 +79,10 @@ for folder in "$@"; do
 				fi
 				if [ $column_position -eq 2 ]; then
 					column_comment=$column_data
+					((column_position=column_position+1))
+					continue
+				fi
+				if [ $column_position -eq 3 ]; then
 					column_position=0
 					echo -ne "\t/** @var ${types[$column_type]} \$$column_name" >> $file
 					echo " $column_comment */" | sed 's/_/\ /g' >> $file
@@ -118,6 +122,39 @@ for folder in "$@"; do
 			echo -e "\tprivate static \$_soft_delete = $soft_delete;" >> $file
 			echo "" >> $file
 
+			# Constructor de la clase
+			echo -e "\t/**" >> $file
+			echo -e "\t * Constructor de la clase" >> $file
+			echo -e "\t * " >> $file
+			echo -e "\t * Se inicializan las propiedades con los valores de los campos default" >> $file
+			echo -e "\t * de la base de datos" >> $file
+			echo -e "\t **/" >> $file
+			echo -e "\tpublic function __construct()" >> $file
+			echo -e "\t{" >> $file
+			for column_data in $columns; do
+				if [ $column_position -eq 0 ]; then
+					column_name=$column_data
+					((column_position=column_position+1))
+					continue
+				fi
+				if [ $column_position -eq 1 ]; then
+					((column_position=column_position+1))
+					continue
+				fi
+				if [ $column_position -eq 2 ]; then
+					((column_position=column_position+1))
+					continue
+				fi
+				if [ $column_position -eq 3 ]; then
+					column_position=0
+					column_default=$column_data
+					if [ ! "$column_default" = "NULL" ]; then
+						echo -e "\t\t\$this->$column_name = $column_default;" >> $file
+					fi
+				fi
+			done
+			echo -e "\t}" >> $file
+
 			# Métodos públicos para el acceso a las propiedades.
 			# En los setters está pensado realizar validaciones según el tipo de datos,
 			# pero esto aún no está incluído en esta edición.
@@ -135,6 +172,10 @@ for folder in "$@"; do
 					continue
 				fi
 				if [ $column_position -eq 2 ]; then
+					((column_position=column_position+1))
+					continue
+				fi
+				if [ $column_position -eq 3 ]; then
 					echo "" >> $file
 					echo -e "\tpublic function get${column_name^}()" >> $file
 					echo -e "\t{" >> $file
@@ -143,7 +184,7 @@ for folder in "$@"; do
 					echo -e "" >> $file
 					echo -e "\tpublic function set${column_name^}(\$value)" >> $file
 					echo -e "\t{" >> $file
-					echo -e "\t\t\$this->$column_name = (${types[$column_type]})\$value;" >> $file
+					echo -e "\t\t\$this->$column_name = \$value === null ? null : (${types[$column_type]})\$value;" >> $file
 					echo -e "\t}" >> $file
 					column_position=0
 				fi
