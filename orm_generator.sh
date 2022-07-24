@@ -218,8 +218,8 @@ for folder in "$@"; do
 					echo "" >> $file
 					echo -e "\tpublic function $table_name()" >> $file
 					echo -e "\t{" >> $file
-					echo -e "\t\t$table_name::flush();" >> $file
-					echo -e "\t\treturn $table_name::where(\"$column_name\", \$this->$referenced_column_name);" >> $file
+					echo -e "\t\t${table_name}_model::flush();" >> $file
+					echo -e "\t\treturn ${table_name}_model::where(\"$column_name\", \$this->$referenced_column_name);" >> $file
 					echo -e "\t}" >> $file
 					column_position=0
 				fi
