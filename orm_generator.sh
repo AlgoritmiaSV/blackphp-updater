@@ -144,7 +144,7 @@ for folder in "$@"; do
 			echo -e "\t * @param bool \$default Determina si se utilizan, o no, los valores por defecto" >> $file
 			echo -e "\t * definidos en la base de datos." >> $file
 			echo -e "\t **/" >> $file
-			echo -e "\tpublic function __construct(\$default = false)" >> $file
+			echo -e "\tpublic function __construct(\$default = true)" >> $file
 			echo -e "\t{" >> $file
 			echo -e "\t\tif(\$default)" >> $file
 			echo -e "\t\t{" >> $file
