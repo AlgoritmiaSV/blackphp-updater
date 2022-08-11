@@ -31,7 +31,7 @@ for folder in "$@"; do
 		cd /store/Clouds/Mega/www/$folder/db/
 
 		# Volcado de la estructura, sin el valor de AUTO_INCREMENT
-		mysqldump -u root -pldi14517 -d --skip-dump-date ${databases[$folder]} | sed 's/ AUTO_INCREMENT=[0-9]*//g' | sed -e 's/DEFINER[ ]*=[ ]*[^*]*\*/\*/' > $temp_dir/$folder/db_structure.sql
+		mysqldump -u root -pldi14517 -d --skip-dump-date ${databases[$folder]} | sed 's/ AUTO_INCREMENT=[0-9]*//g' | sed -e 's/DEFINER[ ]*=[ ]*[^*]*\*/\*/' | sed -e 's/STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION//' > $temp_dir/$folder/db_structure.sql
 
 		# Volcado de los valores de todas las tablas que inician con app_*
 		mysqldump -u root -pldi14517 -t --skip-dump-date --skip-triggers ${databases[$folder]} $(mysql -u root -pldi14517 -D ${databases[$folder]} -Bse "SHOW TABLES LIKE 'app_%'") > $temp_dir/$folder/initial_data.sql

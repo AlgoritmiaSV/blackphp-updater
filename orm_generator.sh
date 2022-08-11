@@ -23,6 +23,7 @@ types[time]=string
 types[year]=int
 types[float]=float
 types[decimal]=float
+types[double]=float
 
 # Si se ejecuta sin parámetros, se hace un volcado de todas las bases de datos definidas en el arreglo; sino, se realiza sólo de las que han sido especificadas.
 if [ "$#" = "0" ]; then
@@ -30,10 +31,12 @@ if [ "$#" = "0" ]; then
 	exit 1
 fi
 
+# $space sustituye los espacios en la consulta, para poder recorrer correctamente los ítems
+space='||'
 for folder in "$@"; do
 	echo "------------ ORM for project $folder"
 	if [ -v databases[$folder] ]; then
-		tables=`mysql --skip-column-names -u root -pldi14517 -e "select TABLE_NAME, REPLACE(TABLE_TYPE, ' ', '_') AS TTYPE FROM information_schema.TABLES WHERE TABLE_SCHEMA = '${databases[$folder]}' ORDER BY TABLE_NAME"`
+		tables=`mysql --skip-column-names -u root -pldi14517 -e "select TABLE_NAME, REPLACE(TABLE_TYPE, ' ', '$space') AS TTYPE FROM information_schema.TABLES WHERE TABLE_SCHEMA = '${databases[$folder]}' ORDER BY TABLE_NAME"`
 		table_position=0
 		table_name=""
 		table_type=""
@@ -62,7 +65,7 @@ for folder in "$@"; do
 
 			# Consultando columnas y creando propiedades
 			# Esta consulta obtiene resultados en tres columnas
-			columns=`mysql --skip-column-names -u root -pldi14517 -e "SELECT COLUMN_NAME, DATA_TYPE, IF(COLUMN_COMMENT = '', '-', REPLACE(COLUMN_COMMENT, ' ', '_')) AS COMMENT, COLUMN_DEFAULT FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '${databases[$folder]}' AND TABLE_NAME = '$table_name'"`
+			columns=`mysql --skip-column-names -u root -pldi14517 -e "SELECT COLUMN_NAME, DATA_TYPE, IF(COLUMN_COMMENT = '', '-', REPLACE(COLUMN_COMMENT, ' ', '$space')) AS COMMENT, REPLACE(COLUMN_DEFAULT, ' ', '$space') AS CDEFAULT FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '${databases[$folder]}' AND TABLE_NAME = '$table_name'"`
 			column_position=0
 			column_name=""
 			column_type=""
@@ -94,7 +97,7 @@ for folder in "$@"; do
 				if [ $column_position -eq 3 ]; then
 					column_position=0
 					echo -ne "\t/** @var ${types[$column_type]} \$$column_name" >> $file
-					echo " $column_comment */" | sed 's/_/\ /g' >> $file
+					echo " $column_comment */" | sed -e "s/$space/\ /g" >> $file
 					echo -e "\tprivate \$$column_name;" >> $file
 					echo "" >> $file
 				fi
@@ -117,7 +120,7 @@ for folder in "$@"; do
 			# Establece el tipo de tabla
 			echo "" >> $file
 			echo -e "\t/** @var string \$_table_type Tipo de tabla */" >> $file
-			echo -e "\tprivate static \$_table_type = \"$table_type\";" >> $file
+			echo -e "\tprivate static \$_table_type = \"$table_type\";" | sed -e "s/$space/\ /g" >> $file
 
 			# Establece el nombre de la llave foránea. (Funciona sólo para llaves primarias de un
 			# solo campo).
@@ -166,7 +169,12 @@ for folder in "$@"; do
 					column_position=0
 					column_default=$column_data
 					if [ ! "$column_default" = "NULL" ]; then
-						echo -e "\t\t\t\$this->$column_name = $column_default;" >> $file
+						re='^[+-]?[0-9]+([.][0-9]+)?$'
+						if [[ $column_default =~ $re ]] ; then
+							echo -e "\t\t\t\$this->$column_name = $column_default;" >> $file
+						else
+							echo -e "\t\t\t\$this->$column_name = $column_default;" | sed -e "s/$space/\ /g" >> $file
+						fi
 					fi
 				fi
 			done
