@@ -40,6 +40,7 @@ for folder in "$@"; do
 		table_position=0
 		table_name=""
 		table_type=""
+		table_count=0
 		for table_data in $tables; do
 			if [ $table_position -eq 0 ]; then
 				table_name=$table_data
@@ -50,7 +51,8 @@ for folder in "$@"; do
 				table_position=0
 			fi
 			file=/store/blackphp/orm/$folder/$table_name"_model.php"
-			echo "Model for table $table_name"
+			((table_count=table_count+1))
+			echo -n -e "$table_count tables processed\r"
 			echo "<?php" > $file
 			echo "/**" >> $file
 			echo " * Model for $table_name" >> $file
@@ -255,6 +257,7 @@ for folder in "$@"; do
 			echo "}" >> $file
 			echo "?>" >> $file
 		done
+		echo ""
 
 		#Sincronizar
 		rsync -cr --delete --info=NAME1 /store/blackphp/orm/$folder/ /store/Clouds/Mega/www/$folder/models/orm/
