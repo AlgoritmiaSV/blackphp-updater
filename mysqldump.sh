@@ -37,8 +37,11 @@ for folder in "$@"; do
 		mysqldump -u root -pldi14517 -t --skip-dump-date --skip-triggers ${databases[$folder]} $(mysql -u root -pldi14517 -D ${databases[$folder]} -Bse "SHOW TABLES LIKE 'app_%'") > $temp_dir/$folder/initial_data.sql
 
 		# Se comprueba que exista un archivo previo de la estructura, y que es diferente. Si el archivo no existe, se crea.
-		rsync -c --info=NAME1 "$temp_dir/$folder/db_structure.sql" ./db_structure.sql
-
+		result=`rsync -c --info=NAME1 "$temp_dir/$folder/db_structure.sql" ./db_structure.sql`
+		if [ "$result" != "" ]; then
+			echo $result
+			/store/Clouds/Mega/insp_storage/2022/Algoritmia/blackphp_updater/orm_generator.sh $folder
+		fi
 		# Se comprueba que exista un archivo previo de los datos iniciales, y que es diferente. Si el archivo no existe, se crea.
 		rsync -c --info=NAME1 "$temp_dir/$folder/initial_data.sql" ./initial_data.sql
 	else
