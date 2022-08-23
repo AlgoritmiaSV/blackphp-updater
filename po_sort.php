@@ -55,7 +55,7 @@
 	ksort($messages);
 
 	$lines = Array();
-	if($locale != "en_US" && file_exists($required))
+	if(file_exists($required))
 	{
 		$lines = file_get_contents($required);
 		$lines = explode("\n", $lines);
@@ -76,18 +76,15 @@
 			$txt .= "\n";
 			if($context == "0")
 			{
-				if($locale != "en_US")
+				$index = array_search($message["id"], $lines);
+				if($index !== false)
 				{
-					$index = array_search($message["id"], $lines);
-					if($index !== false)
-					{
-						unset($lines[$index]);
-					}
-					else
-					{
-						$txt .= "# Not required\n";
-						$not_required++;
-					}
+					unset($lines[$index]);
+				}
+				else
+				{
+					$txt .= "# Not required\n";
+					$not_required++;
 				}
 			}
 			else
@@ -122,7 +119,7 @@
 			$txt .= "\n#msgctxt \"$parts[0]\"\n#msgid \"$parts[1]\"\n#msgstr \"\"\n";
 			$not_translated++;
 		}
-		elseif(!empty($line))
+		elseif(!empty($line) && $locale != "en_US")
 		{
 			$txt .= "\n#msgid \"$line\"\n#msgstr \"\"\n";
 			$not_translated++;

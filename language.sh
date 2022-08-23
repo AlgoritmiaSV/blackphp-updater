@@ -20,9 +20,13 @@ for project in "${projects[@]}"; do
 	echo "------------ Update language files in $project"
 	temp_directory="/store/bphp/locale/$project"
 	cd $temp_directory
-	grep -nrw "/store/Clouds/Mega/www/$project/views/" -e '_\(.*\)' | sed -E 's/(.*_\()([^\)]*)(\).*)/\2/' | grep -v '{{' > required.txt
-	grep -nrw "/store/Clouds/Mega/www/$project/controllers/" -e '_\(.*\)' | sed -E 's/(.*_\(\")([^\)]*)(\"\).*)/\2/' | grep -v '/store/Clouds/' >> required.txt
-	mysql --skip-column-names -u root -pldi14517 ${databases[$project]} -e "SELECT module_name FROM app_modules UNION SELECT method_name FROM app_methods UNION SELECT theme_name FROM app_themes UNION SELECT method_description FROM app_methods" >> required.txt
+	grep -nrw "/store/Clouds/Mega/www/$project/views/" -Ee '_\([^\)]+\)' | sed -E 's/\)/\)\n/g' | grep -Ee '_\([^\)]+\)' | sed -E 's/(.*_\()([^\)]*)(\).*)/\2/' | grep -v '{{' > required.txt
+	grep -nrw "/store/Clouds/Mega/www/$project/controllers/" -Ee '_\([^\)]+\)'  | sed -E 's/\)/\)\n/g' | grep -Ee '_\([^\)]+\)' | sed -E 's/(.*_\(\")([^\)]*)(\"\).*)/\2/' | grep -v '/store/Clouds/' >> required.txt
+	mysql --skip-column-names -u root -pldi14517 ${databases[$project]} -e "SELECT module_name FROM app_modules WHERE status = 1 UNION SELECT method_name FROM app_methods WHERE status = 1 UNION SELECT theme_name FROM app_themes UNION SELECT method_description FROM app_methods WHERE status = 1" >> required.txt
+	app_payments=`mysql --skip-column-names -u root -pldi14517 information_schema -e "SELECT 1 FROM TABLES WHERE TABLE_SCHEMA = '${databases[$project]}' AND TABLE_NAME = 'app_payments'"`
+	if [ "$app_payments" = "1" ]; then
+		mysql --skip-column-names -u root -pldi14517 ${databases[$project]} -e "SELECT CONCAT('payments', ptype_name) FROM app_payments" >> required.txt
+	fi
 	sort -u -o required.txt required.txt
 	for locale in "${locales[@]}"; do
 		temp_directory="/store/bphp/locale/$project/$locale"
