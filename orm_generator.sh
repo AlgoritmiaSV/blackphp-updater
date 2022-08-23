@@ -50,7 +50,7 @@ for folder in "$@"; do
 				table_type=$table_data
 				table_position=0
 			fi
-			file=/store/blackphp/orm/$folder/$table_name"_model.php"
+			file=/store/bphp/orm/$folder/$table_name"_model.php"
 			((table_count=table_count+1))
 			echo -n -e "$table_count tables processed\r"
 			echo "<?php" > $file
@@ -260,7 +260,7 @@ for folder in "$@"; do
 		echo ""
 
 		#Sincronizar
-		rsync -cr --delete --info=NAME1 /store/blackphp/orm/$folder/ /store/Clouds/Mega/www/$folder/models/orm/
+		rsync -cr --delete --info=NAME1 /store/bphp/orm/$folder/ /store/Clouds/Mega/www/$folder/models/orm/
 	else
 		echo "Project $1 not exists"
 	fi

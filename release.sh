@@ -27,10 +27,10 @@ echo "------------ Releasing $1"
 source=/store/Clouds/Mega/www/$1
 
 # Carpeta de producción, donde se encontrarán los archivos resultantes
-production=/store/blackphp/production/$1
+production=/store/bphp/production/$1
 
 # Todos los lanzamientos. En esta carpeta estarán los archivos zip de cada vez que se ejecute el script
-releases=/store/blackphp/releases/$1
+releases=/store/bphp/releases/$1
 
 # Comprobar si existe la carpeta origen
 if [ ! -d $source ]; then

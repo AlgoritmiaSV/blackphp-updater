@@ -20,7 +20,7 @@ if [ "$#" = "0" ]; then
 fi
 
 # Se guardan todos los volcados en una carpeta temporal, para luego comparar si hubieron cambios. Esto, para evitar que la sincronización en la nuble se repita si solo cambia la fecha de actualización.
-temp_dir=/store/blackphp/mysqldump
+temp_dir=/store/bphp/mysqldump
 # Por cada nombre de base de datos recibida por parámetro...
 for folder in "$@"; do
 	# Comprueba si existe en el arreglo; sino, devolverá un error.
