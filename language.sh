@@ -34,12 +34,12 @@ for project in "${projects[@]}"; do
 		if [ -d "$directory" ]; then
 			cd $directory
 			php /store/Clouds/Mega/insp_storage/2022/Algoritmia/blackphp_updater/po_sort.php $project $locale
-			rsync -c --info=NAME1 $temp_directory/messages.po $directory/messages.po
+			rsync -c $temp_directory/messages.po $directory/messages.po
 			if [ "messages.po" -nt "messages.mo" ]; then
 				msgfmt messages.po
-				echo "    $locale Changed"
-			else
-				echo "    $locale Up to date"
+				echo "$locale Changed"
+			#else
+			#	echo "$locale Up to date"
 			fi
 		fi
 	done

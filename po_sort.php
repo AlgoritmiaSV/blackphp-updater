@@ -127,7 +127,7 @@
 	}
 	if($not_translated > 0)
 	{
-		echo "$not_translated not translated expressions\n";
+		echo "$not_translated untranslated messages\n";
 	}
 	$fd = fopen($temp_po, "w+");
 	fwrite($fd, $txt);

@@ -14,7 +14,7 @@ scripts=(main lists forms dialogs order tree charts)
 modified=false
 echo "------------ Minify JS"
 # Imprime la fecha y hora de última generación de bpscript.min.js
-echo "    bpscript.min.js last update: `stat -c %y bpscript.min.js`"
+# echo "    bpscript.min.js last update: `stat -c %y bpscript.min.js`"
 for i in "${scripts[@]}"; do
 	if [ "$i.js" -nt bpscript.min.js ]; then
 		echo "    $i.js Modified"
@@ -29,6 +29,6 @@ if $modified; then
 		wget -q --post-data="input=`php -r \"echo urlencode(file_get_contents(\\\"$i.js\\\"));\"`" -O - https://www.toptal.com/developers/javascript-minifier/api/raw >> $dir/bpscript.min.js
 		echo ";" >> $dir/bpscript.min.js
 	done
-else
-	echo "    All up to date"
+#else
+#	echo "    All up to date"
 fi
