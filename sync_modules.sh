@@ -40,6 +40,17 @@ usage()
 	declare -F | awk {'print "\t" $3'}
 }
 
+all()
+{
+	options=`declare -F | awk {'print $3'}`
+	for option in $options; do
+		if [ "$option" == "all" -o "$option" == "usage" ]; then
+			continue
+		fi
+		$option $1 $2
+	done
+}
+
 #	Main
 source=/store/Clouds/Mega/www/negkit
 destiny=/store/Clouds/Mega/www/mimakit
