@@ -31,10 +31,10 @@ then
 	rsync -av --exclude ".git/" --exclude "db/" --exclude "README.md" --exclude ".gitignore" --exclude "entities/" blackphp/ $1/
 else
 	# Comprueba la cantidad de archivos a transferir
-	files=`rsync -avn --stats --exclude ".git/" --exclude "db/" --include "controllers/devUtils.php" --include "controllers/error.php" --exclude "controllers/*" --exclude "public/icons" --exclude "public/images" --exclude "favicon.ico" --exclude "models/" --exclude "README.md" --exclude "views/" --exclude ".gitignore" --exclude "entities/" --exclude "locale/" blackphp/ $1/ | grep "files transferred" | cut -c 38-`
+	files=`rsync -avn --stats --exclude ".git/" --exclude "db/" --include "controllers/devUtils.php" --include "controllers/error.php" --include "controllers/Resources.php" --exclude "controllers/*" --exclude "public/icons" --exclude "public/images" --exclude "favicon.ico" --exclude "models/" --exclude "README.md" --exclude "views/" --exclude ".gitignore" --exclude "entities/" --exclude "locale/" blackphp/ $1/ | grep "files transferred" | cut -c 38-`
 	# Si la cantidad de archivos a transferir es mayor que cero, realiza la sincronización, de lo contrario, imprime "Up to date".
 	if [ $files -gt "0" ]; then
-		rsync -a --exclude ".git/" --exclude "db/" --include "controllers/devUtils.php" --include "controllers/error.php" --exclude "controllers/*" --exclude "public/icons" --exclude "public/images" --exclude "favicon.ico" --exclude "models/" --exclude "README.md" --exclude "views/" --exclude ".gitignore" --exclude "entities/" --exclude "locale/" --info=NAME1 blackphp/ $1/
+		rsync -a --exclude ".git/" --exclude "db/" --include "controllers/devUtils.php" --include "controllers/error.php" --include "controllers/Resources.php" --exclude "controllers/*" --exclude "public/icons" --exclude "public/images" --exclude "favicon.ico" --exclude "models/" --exclude "README.md" --exclude "views/" --exclude ".gitignore" --exclude "entities/" --exclude "locale/" --info=NAME1 blackphp/ $1/
 	#else
 	#	echo "    Up to date";
 	fi
