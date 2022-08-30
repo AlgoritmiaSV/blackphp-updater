@@ -40,7 +40,7 @@ fi
 
 # Sincronización de archivos no sujetos a minificación, como las imágenes, fuentes, y archivos que previamente hayan sido minificados
 echo "    Syncing..."
-rsync -cr --delete --chown=fajardo:fajardo --chmod=D755,F644 --exclude ".git" --exclude ".gitignore" --exclude "companies/" --exclude "entities/" --exclude "db/historical/" --exclude "docs/" --include "default_config.php" --exclude "*.php" --include "public/scripts/*.min.js" --exclude "public/scripts/*" --exclude "*.html" --include "*.min.css" --exclude "*.css" --info=NAME1 $source/ $production/
+rsync -cr --delete --chown=fajardo:fajardo --chmod=D755,F644 --exclude ".git" --exclude ".gitignore" --exclude "companies/" --exclude "entities/" --exclude "db/historical/" --exclude "/docs/" --include "default_config.php" --exclude "*.php" --include "public/scripts/*.min.js" --exclude "public/scripts/*" --exclude "*.html" --include "*.min.css" --exclude "*.css" --info=NAME1 $source/ $production/
 
 # Minificación y copia de archivos PHP
 echo "    Minifying PHP..."
