@@ -34,6 +34,12 @@ index()
 	rsync -ac --info=NAME1 $1/controllers/index.php $2/controllers/index.php
 }
 
+reports()
+{
+	rsync -ac --info=NAME1 $1/controllers/Reports.php $2/controllers/Reports.php
+	rsync -acr --delete --info=NAME1 $1/views/reports/ $2/views/reports/
+}
+
 usage()
 {
 	echo Available options:

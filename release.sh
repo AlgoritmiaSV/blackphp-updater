@@ -38,13 +38,26 @@ if [ ! -d $source ]; then
 	exit 1
 fi
 
+# Creación de un archivo JSON con la fecha de lanzamiento
+cd $source
+echo "    Setting date..."
+last_update=`date +"%Y-%m-%d %H:%M:%S"`
+version=`jq -r ".version" app_info.json`
+number=`jq -r ".number" app_info.json`
+number=$((number+1))
+system_name=`jq -r ".system_name" app_info.json`
+jq -n --arg last_update "$last_update" \
+		--arg version "$version" \
+		--arg number "$number" \
+		--arg system_name "$system_name" \
+'{"system_name": "\($system_name)", "version": "\($version)", "number": "\($number)", "last_update": "\($last_update)"}' > app_info.json
+
 # Sincronización de archivos no sujetos a minificación, como las imágenes, fuentes, y archivos que previamente hayan sido minificados
 echo "    Syncing..."
 rsync -cr --delete --chown=fajardo:fajardo --chmod=D755,F644 --exclude ".git" --exclude ".gitignore" --exclude "companies/" --exclude "entities/" --exclude "db/historical/" --exclude "/docs/" --include "default_config.php" --exclude "*.php" --include "public/scripts/*.min.js" --exclude "public/scripts/*" --exclude "*.html" --include "*.min.css" --exclude "*.css" --info=NAME1 $source/ $production/
 
 # Minificación y copia de archivos PHP
 echo "    Minifying PHP..."
-cd $source
 while read -r php_file; do
 	if [ ! -f "$production/$php_file" -o "$source/$php_file" -nt "$production/$php_file" ]; then
 		/usr/bin/php -w $source/$php_file > $production/$php_file
@@ -72,16 +85,6 @@ done < <(find . -type f -name "*.html")
 
 # Navegando hacia la carppeta de producción
 cd $production
-
-# Creación de un archivo JSON con la fecha de lanzamiento
-echo "    Setting date..."
-last_update=`date +"%Y-%m-%d %H:%M:%S"`
-version=`jq -r ".version" app_info.json`
-number=`jq -r ".number" app_info.json`
-jq -n --arg last_update "$last_update" \
-		--arg version "$version" \
-		--arg number "$number" \
-'{"last_update": "\($last_update)", "version": "\($version)", "number": "\($number)"}' > app_info.json
 
 # Compresión en un archivo zip que irá a la carpeta releases
 zip_file=$releases/release_`/bin/date +\%Y\%m\%d\%H\%M\%S`.zip
