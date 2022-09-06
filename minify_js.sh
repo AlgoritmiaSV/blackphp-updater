@@ -7,6 +7,7 @@
 
 # Navegar hacia el directorio de BlackPHP donde se encuentrasn los scripts
 dir=/store/Clouds/Mega/www/blackphp/public/scripts
+temp_file=/store/bphp/js/bpscript.js
 cd $dir
 
 # Verificar cuáles de los scipt son más nuevos que el último bpscript.min.js generado.
@@ -23,12 +24,12 @@ for i in "${scripts[@]}"; do
 done
 # Si hay al menos un archivo nuevo, entonces se hace de nuevo el proceso de minificación; de lo contrario, imprime "All up to date"
 if $modified; then
-	echo "/*BlackPHP (c)2022 Edwin Fajardo.*/" > $dir/bpscript.min.js
+	echo "Minifying..."
+	echo "/* BPHPSCRIPT */" > $temp_file
 	for i in ${scripts[@]}; do
-		echo "    Minify $i"
-		wget -q --post-data="input=`php -r \"echo urlencode(file_get_contents(\\\"$i.js\\\"));\"`" -O - https://www.toptal.com/developers/javascript-minifier/api/raw >> $dir/bpscript.min.js
-		echo ";" >> $dir/bpscript.min.js
+		cat $i.js >> $temp_file
 	done
-#else
-#	echo "    All up to date"
+	echo "/*BlackPHP (c)2022 Edwin Fajardo.*/" > $dir/bpscript.min.js
+	wget -q --post-data="input=`php -r \"echo urlencode(file_get_contents(\\\"$temp_file\\\"));\"`" -O - https://www.toptal.com/developers/javascript-minifier/api/raw >> $dir/bpscript.min.js
+	echo ";" >> $dir/bpscript.min.js
 fi
