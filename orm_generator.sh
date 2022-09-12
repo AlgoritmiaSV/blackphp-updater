@@ -35,6 +35,7 @@ fi
 space='||'
 for folder in "$@"; do
 	echo "------------ ORM for project $folder"
+	rm /store/bphp/orm/$folder/*_model.php
 	if [ -v databases[$folder] ]; then
 		tables=`mysql --skip-column-names -u root -pldi14517 -e "select TABLE_NAME, REPLACE(TABLE_TYPE, ' ', '$space') AS TTYPE FROM information_schema.TABLES WHERE TABLE_SCHEMA = '${databases[$folder]}' ORDER BY TABLE_NAME"`
 		table_position=0

@@ -28,10 +28,14 @@ if [ "$#" = "1" ] || ([ $# -gt 1 ] && [ "$2" = "0" ]); then
 	version=`jq -r ".version" blackphp/app_info.json`
 	number=`jq -r ".number" blackphp/app_info.json`
 	number=$((number+1))
+	copyright=`jq -r ".copyright" blackphp/app_info.json`
+	website=`jq -r ".website" blackphp/app_info.json`
 	jq -n --arg last_update "$last_update" \
 			--arg version "$version" \
 			--arg number "$number" \
-	'{"system_name": "BlackPHP", "version": "\($version)", "number": "\($number)", "last_update": "\($last_update)"}' > blackphp/app_info.json
+			--arg copyright "$copyright" \
+			--arg website "$website" \
+	'{"system_name": "BlackPHP", "version": "\($version)", "number": "\($number)", "last_update": "\($last_update)", "copyright": "\($copyright)", "website": "\($website)"}' > blackphp/app_info.json
 fi
 
 # Cantidad de archivos a modificar (Si es cero, no se actualiza)

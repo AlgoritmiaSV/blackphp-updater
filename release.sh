@@ -46,11 +46,15 @@ version=`jq -r ".version" app_info.json`
 number=`jq -r ".number" app_info.json`
 number=$((number+1))
 system_name=`jq -r ".system_name" app_info.json`
+copyright=`jq -r ".copyright" app_info.json`
+website=`jq -r ".website" app_info.json`
 jq -n --arg last_update "$last_update" \
 		--arg version "$version" \
 		--arg number "$number" \
 		--arg system_name "$system_name" \
-'{"system_name": "\($system_name)", "version": "\($version)", "number": "\($number)", "last_update": "\($last_update)"}' > app_info.json
+		--arg copyright "$copyright" \
+		--arg website "$website" \
+'{"system_name": "\($system_name)", "version": "\($version)", "number": "\($number)", "last_update": "\($last_update)", "copyright": "\($copyright)", "website": "\($website)"}' > app_info.json
 
 # Sincronización de archivos no sujetos a minificación, como las imágenes, fuentes, y archivos que previamente hayan sido minificados
 echo "    Syncing..."
@@ -85,6 +89,17 @@ done < <(find . -type f -name "*.html")
 
 # Navegando hacia la carppeta de producción
 cd $production
+
+# Eliminando archivos innecesarios
+# La comprobación de pwd y $production se hace para evitar eliminar algun archivo por error
+# en caso de que cd $production haya fallado
+if [ "`pwd`" = "$production" ]; then
+	while read -r file_name; do
+		if [ ! -f "$source/$file_name" ] && [ ! -d "$source/$file_name" ]; then
+			rm -rv $file_name
+		fi
+	done < <(find .)
+fi
 
 # Compresión en un archivo zip que irá a la carpeta releases
 zip_file=$releases/release_`/bin/date +\%Y\%m\%d\%H\%M\%S`.zip
