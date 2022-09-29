@@ -40,6 +40,12 @@ reports()
 	rsync -acr --delete --info=NAME1 $1/views/reports/ $2/views/reports/
 }
 
+settings()
+{
+	rsync -ac --info=NAME1 $1/controllers/Settings.php $2/controllers/Settings.php
+	rsync -acr --delete --info=NAME1 --exclude "info_details.html" $1/views/settings/ $2/views/settings/
+}
+
 usage()
 {
 	echo Available options:
