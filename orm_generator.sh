@@ -24,6 +24,7 @@ types[year]=int
 types[float]=float
 types[decimal]=float
 types[double]=float
+types[bigint]=int
 
 # Si se ejecuta sin parámetros, se hace un volcado de todas las bases de datos definidas en el arreglo; sino, se realiza sólo de las que han sido especificadas.
 if [ "$#" = "0" ]; then
