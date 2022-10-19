@@ -25,16 +25,17 @@ temp_dir=/store/bphp/mysqldump
 for folder in "$@"; do
 	# Comprueba si existe en el arreglo; sino, devolverá un error.
 	if [ -v databases[$folder] ]; then
-		echo "------------ MYSQLDUMP > ${databases[$folder]} to $folder"
+		database=${databases[$folder]}
+		echo "------------ MYSQLDUMP > $database to $folder"
 
 		# Navegamos hacia la carpeta db dentro del proyecto seleccionado
 		cd /store/Clouds/Mega/www/$folder/db/
 
 		# Volcado de la estructura, sin el valor de AUTO_INCREMENT
-		mysqldump -u root -pldi14517 -d --skip-dump-date ${databases[$folder]} | sed 's/ AUTO_INCREMENT=[0-9]*//g' | sed -e 's/DEFINER[ ]*=[ ]*[^*]*\*/\*/' | sed -E "s/(SET sql_mode\s+= ')(.*)(')/\1\3/" > $temp_dir/$folder/db_structure.sql
+		mysqldump -u root -pldi14517 -d --skip-dump-date $database | sed 's/ AUTO_INCREMENT=[0-9]*//g' | sed -e 's/DEFINER[ ]*=[ ]*[^*]*\*/\*/' | sed -E "s/(SET sql_mode\s+= ')(.*)(')/\1\3/" | sed "s/\`$database\`\.//g" > $temp_dir/$folder/db_structure.sql
 
 		# Volcado de los valores de todas las tablas que inician con app_*
-		mysqldump -u root -pldi14517 -t --skip-dump-date --skip-triggers ${databases[$folder]} $(mysql -u root -pldi14517 -D ${databases[$folder]} -Bse "SHOW TABLES LIKE 'app_%'") > $temp_dir/$folder/initial_data.sql
+		mysqldump -u root -pldi14517 -t --skip-dump-date --skip-triggers $database $(mysql -u root -pldi14517 -D $database -Bse "SHOW TABLES LIKE 'app_%'") > $temp_dir/$folder/initial_data.sql
 
 		# Se comprueba que exista un archivo previo de la estructura, y que es diferente. Si el archivo no existe, se crea.
 		result=`rsync -c --info=NAME1 "$temp_dir/$folder/db_structure.sql" ./db_structure.sql`
