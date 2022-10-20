@@ -113,8 +113,7 @@ for folder in "$@"; do
 				timestamps=true
 			fi
 
-			
-			#Propiedades generales
+			# PROPIEDADES GENERALES
 
 			# Establece el nombre de la tabla
 			echo "" >> $file
@@ -141,6 +140,17 @@ for folder in "$@"; do
 			echo "" >> $file
 			echo -e "\t/** @var bool \$_soft_delete La tabla soporta borrado suave */" >> $file
 			echo -e "\tprivate static \$_soft_delete = $soft_delete;" >> $file
+
+			# Determina si hay un campo status, y si este puede tomar un valor nulo
+			is_nullable=`mysql --skip-column-names -u root -pldi14517 -e "SELECT IS_NULLABLE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '${databases[$folder]}' AND TABLE_NAME = '$table_name' AND COLUMN_NAME = 'status'"`
+			if [ "$is_nullable" = "YES" ]; then
+				deleted_status="null"
+			else
+				deleted_status="0"
+			fi
+			echo "" >> $file
+			echo -e "\t/** @var int|null \$_deleted_status Valor a asignar en caso de borrado suave. */" >> $file
+			echo -e "\tprivate static \$_deleted_status = $deleted_status;" >> $file
 			echo "" >> $file
 
 			# Constructor de la clase
