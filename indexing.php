@@ -12,6 +12,8 @@
 	$commented = false;
 	$i = 0;
 	$index = Array();
+	$methods = 0;
+	$documented = 0;
 	foreach($lines as $line)
 	{
 		$i++;
@@ -48,6 +50,14 @@
 			$num = str_pad($item[0], 4, " ", STR_PAD_LEFT);
 			$status = $item[2] ? " " : "*";
 			echo "\t$num {$status}$item[1]\n";
+			if($item[2])
+			{
+				$documented++;
+			}
+			$methods++;
 		}
 	}
+	echo "-------------------------------------\n";
+	echo "Methods:    $methods\n";
+	echo "Documented: $documented\n";
 ?>
