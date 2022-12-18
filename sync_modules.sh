@@ -64,6 +64,13 @@ all()
 }
 
 #	Main
+# Se requieren permisos de root (Sólo en Linux)
+if [[ $EUID -ne 0 ]]; then
+	echo "This script must be run as root"
+	command="${0} ${@}"
+	su -c "$command"
+	exit 1
+fi
 source=/store/Clouds/Mega/www/negkit
 destiny=/store/Clouds/Mega/www/mimakit
 if [ "$#" = "0" ]; then
