@@ -9,7 +9,6 @@ declare -A databases
 databases[blackphp]=blackphp
 databases[negkit]=negkit
 databases[sicoimWebApp]=sicoim
-databases[acrossdesk]=acrossdesk
 databases[mimakit]=mimakit
 databases[rtinfo]=rtinfo
 

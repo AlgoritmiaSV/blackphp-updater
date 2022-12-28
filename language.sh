@@ -7,12 +7,11 @@
 # gettext
 
 #Lista de proyectos
-projects=(blackphp negkit sicoimWebApp acrossdesk mimakit)
+projects=(blackphp negkit sicoimWebApp mimakit)
 declare -A databases
 databases[blackphp]=blackphp
 databases[negkit]=negkit
 databases[sicoimWebApp]=sicoim
-databases[acrossdesk]=acrossdesk
 databases[mimakit]=mimakit
 #Lista de idiomas regionales
 locales=(es_ES en_US)

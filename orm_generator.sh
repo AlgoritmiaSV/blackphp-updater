@@ -4,7 +4,6 @@ declare -A databases
 databases[blackphp]=blackphp
 databases[negkit]=negkit
 databases[sicoimWebApp]=sicoim
-databases[acrossdesk]=acrossdesk
 databases[mimakit]=mimakit
 
 # Posibles tipos de columna en la base de datos (Se deben registrar las faltantes)

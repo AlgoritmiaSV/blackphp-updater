@@ -9,7 +9,7 @@
 # Se comprueba que se haya pasado por parámetro el nombre de la carpeta con la cual se quiere sincronizar, de lo contrario, sincronizará con una lista definida.
 if [ "$#" = "0" ]; then
 	updated=0
-	for folder in negkit sicoimWebApp acrossdesk mimakit
+	for folder in negkit sicoimWebApp mimakit
 	do
 		echo "------------ RSYNC BlackPHP > $folder"
 		$0 $folder $updated
