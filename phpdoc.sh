@@ -26,6 +26,9 @@ fi
 # Compueba que el nombre de la carpeta pasada por parámetro exista en el arrego $titles, y si es así, se genera la documentación, de lo contrario devuelve un error.
 echo "------------ Generating documentation for $1"
 if [ -v titles[$1] ]; then
+	if [ ! -d /store/bphp/documentation/$1/ ]; then
+		mkdir -p /store/bphp/documentation/$1/
+	fi
 	phpdoc -d /store/Clouds/Mega/www/$1/ -t /store/bphp/documentation/$1/ -i vendor/ -i plugins/ --title "${titles[$1]}" --setting="guides.enabled=true"
 else
 	echo "Error: $1 NOT EXISTS"

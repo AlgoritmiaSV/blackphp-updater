@@ -12,7 +12,7 @@ fi
 
 # Ruta de los scripts
 echo "Update web"
-path=/store/Clouds/Mega/insp_storage/2022/Algoritmia/blackphp_updater
+path=/store/Clouds/Mega/insp_storage/2023/Algoritmia/blackphp_updater
 
 # Ejecución
 $path/minify_js.sh

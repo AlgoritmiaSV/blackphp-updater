@@ -7,11 +7,15 @@
 
 # Navegar hacia el directorio de BlackPHP donde se encuentrasn los scripts
 dir=/store/Clouds/Mega/www/blackphp/public/scripts
-temp_file=/store/bphp/js/bpscript.js
+temp_folder=/store/bphp/js
+if [ ! -d $temp_folder ]; then
+	mkdir -p $temp_folder
+fi
+temp_file=$temp_folder/bpscript.js
 cd $dir
 
 # Verificar cuáles de los scipt son más nuevos que el último bpscript.min.js generado.
-scripts=(main lists forms dialogs order tree charts)
+scripts=(main lists forms dialogs order tree charts persistent_forms)
 modified=false
 echo "------------ Minify JS"
 # Imprime la fecha y hora de última generación de bpscript.min.js
@@ -29,7 +33,7 @@ if $modified; then
 	for i in ${scripts[@]}; do
 		cat $i.js >> $temp_file
 	done
-	echo "/*BlackPHP (c)2022 Edwin Fajardo.*/" > $dir/bpscript.min.js
+	echo "/*BlackPHP (c)2022 - 2023 Edwin Fajardo.*/" > $dir/bpscript.min.js
 	wget -q --post-data="input=`php -r \"echo urlencode(file_get_contents(\\\"$temp_file\\\"));\"`" -O - https://www.toptal.com/developers/javascript-minifier/api/raw >> $dir/bpscript.min.js
 	echo ";" >> $dir/bpscript.min.js
 fi

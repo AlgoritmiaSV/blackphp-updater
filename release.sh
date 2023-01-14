@@ -26,16 +26,22 @@ echo "------------ Releasing $1"
 # Carpeta origen del proyecto
 source=/store/Clouds/Mega/www/$1
 
-# Carpeta de producción, donde se encontrarán los archivos resultantes
-production=/store/bphp/production/$1
-
-# Todos los lanzamientos. En esta carpeta estarán los archivos zip de cada vez que se ejecute el script
-releases=/store/bphp/releases/$1
-
 # Comprobar si existe la carpeta origen
 if [ ! -d $source ]; then
 	echo "Project $1 not exists!"
 	exit 1
+fi
+
+# Carpeta de producción, donde se encontrarán los archivos resultantes
+production=/store/bphp/production/$1
+if [ ! -d $production ]; then
+	mkdir -p $production
+fi
+
+# Todos los lanzamientos. En esta carpeta estarán los archivos zip de cada vez que se ejecute el script
+releases=/store/bphp/releases/$1
+if [ ! -d $releases ]; then
+	mkdir -p $releases
 fi
 
 # Creación de un archivo JSON con la fecha de lanzamiento
@@ -58,7 +64,7 @@ jq -n --arg last_update "$last_update" \
 
 # Sincronización de archivos no sujetos a minificación, como las imágenes, fuentes, y archivos que previamente hayan sido minificados
 echo "    Syncing..."
-rsync -cr --delete --chown=fajardo:fajardo --chmod=D755,F644 --exclude ".git" --exclude ".gitignore" --exclude "companies/" --exclude "entities/" --exclude "db/historical/" --exclude "/docs/" --include "default_config.php" --exclude "*.php" --include "public/scripts/*.min.js" --exclude "public/scripts/*" --exclude "*.html" --include "*.min.css" --exclude "*.css" --info=NAME1 $source/ $production/
+rsync -cr --delete --chown=fajardo:fajardo --chmod=D755,F644 --exclude ".git" --exclude ".gitignore" --exclude "companies/" --exclude "entities/" --exclude "db/historical/" --exclude "/docs/" --exclude "node_modules/" --include "default_config.php" --exclude "*.php" --include "public/scripts/*.min.js" --exclude "public/scripts/*" --exclude "*.html" --include "*.min.css" --exclude "*.css" --exclude "CHANGELOG.*" --exclude "changelog.*" --exclude "bower.json" --exclude "composer.json" --exclude "composer.lock" --exclude "package.json" --exclude "package-lock.json" --exclude "messages.po" --info=NAME1 $source/ $production/
 
 # Minificación y copia de archivos PHP
 echo "    Minifying PHP..."
@@ -76,7 +82,7 @@ while read -r css_file; do
 		echo "    $css_file"
 		cat $css_file | sed -e "s|/\*\(\\\\\)\?\*/|/~\1~/|g" -e "s|/\*[^*]*\*\+\([^/][^*]*\*\+\)*/||g" -e "s|\([^:/]\)//.*$|\1|" -e "s|^//.*$||" | tr '\n' ' ' | sed -e "s|/\*[^*]*\*\+\([^/][^*]*\*\+\)*/||g" -e "s|/\~\(\\\\\)\?\~/|/*\1*/|g" -e "s|\s\+| |g" -e "s| \([{;:,]\)|\1|g" -e "s|\([{;:,]\) |\1|g" > $production/$css_file
 	fi
-done < <(find . -type f -name "*.css" ! -name "*.min.css")
+done < <(find . -type f -name "*.css" ! -name "*.min.css" ! -path "./node_modules/*")
 
 # Minificación y copia de archivos HTML
 echo "    Minifying HTML..."
@@ -85,7 +91,24 @@ while read -r html_file; do
 		cat $html_file | sed ':a;N;$!ba;s/>\s*</></g' > $production/$html_file
 		echo "    $html_file"
 	fi
-done < <(find . -type f -name "*.html")
+done < <(find . -type f -name "*.html" ! -path "./node_modules/*")
+
+# Exportando node_modules; sólo las carpetas de distribución.
+node_dir=/store/bphp/node_modules
+if [ ! -d $node_dir ]; then
+	mkdir -p $node_dir
+fi
+node_folders=$node_dir/$1.txt
+for i in `cat $source/libs/View.php | grep "node_modules" | tr -d "'" | tr -d ","`; do
+	dirname $i >> $node_folders
+done
+sort -u -o $node_folders $node_folders
+for i in `cat $node_folders`; do
+	if [ ! -d $production/$i/ ]; then
+		mkdir -p $production/$i/
+	fi
+	rsync -cr --delete --exclude "docs" --chown=fajardo:fajardo --chmod=D755,F644 --info=NAME1 $source/$i/ $production/$i/
+done
 
 # Navegando hacia la carppeta de producción
 cd $production
