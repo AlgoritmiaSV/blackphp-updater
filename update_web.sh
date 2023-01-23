@@ -16,6 +16,7 @@ path=/store/Clouds/Mega/insp_storage/2023/Algoritmia/blackphp_updater
 
 # Ejecución
 $path/minify_js.sh
+$path/sass.sh
 $path/blackphp.sh
 $path/mysqldump.sh
 $path/language.sh

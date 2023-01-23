@@ -56,7 +56,9 @@ else
 	# Si la cantidad de archivos a transferir es mayor que cero, realiza la sincronización, de lo contrario, imprime "Up to date".
 	files=`echo $files | sed -e 's/,//'`
 	if [ $files -gt "0" ]; then
-		rsync -a --exclude ".git/" --exclude ".vscode" --exclude "db/" --include "controllers/devUtils.php" --include "controllers/error.php" --include "controllers/Resources.php" --exclude "controllers/*" --exclude "public/icons" --exclude "public/images" --exclude "favicon.ico" --exclude "models/" --exclude "README.md" --exclude "views/*" --exclude ".gitignore" --exclude "entities/" --exclude "locale/" --exclude "app_info.json" --exclude "/config.php" --exclude "manifest.json" --info=NAME1 blackphp/ $1/
+		rsync -a --exclude ".git/" --exclude ".vscode" --exclude "db/" --include "controllers/devUtils.php" --include "controllers/error.php" --include "controllers/Resources.php" --exclude "controllers/*" --exclude "public/icons" --exclude "public/images" --exclude "favicon.ico" --exclude "models/" --exclude "README.md" --exclude "views/*" --exclude ".gitignore" --exclude "entities/" --exclude "locale/" --exclude "app_info.json" --exclude "/config.php" --exclude "manifest.json" --exclude "/node_modules" --exclude "/vendor" --info=NAME1 blackphp/ $1/
+		rsync -a --delete --info=NAME1 blackphp/node_modules/ $1/node_modules/
+		rsync -a --delete --info=NAME1 blackphp/vendor/ $1/vendor/
 	fi
 
 #	echo "    Rsync Delete node_modules"
