@@ -26,6 +26,6 @@ for theme in "${!themes[@]}"; do
 	if [ ! -d $theme_folder ]; then
 		mkdir -p $theme_folder
 	fi
-	sass --no-source-map --style=compressed theme_$theme.scss $theme_folder/theme.css
+	sass --no-source-map --style=compressed theme_$theme.scss $theme_folder/theme.min.css
 done
 rsync -rc --info=NAME1 $temp_folder/ $dir/
