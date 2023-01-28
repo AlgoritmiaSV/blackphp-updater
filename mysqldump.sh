@@ -34,8 +34,12 @@ for folder in "$@"; do
 		# Navegamos hacia la carpeta db dentro del proyecto seleccionado
 		cd /store/Clouds/Mega/www/$folder/db/
 
-		# Volcado de la estructura, sin el valor de AUTO_INCREMENT
-		mysqldump -u root -pldi14517 -d --skip-dump-date $database | sed 's/ AUTO_INCREMENT=[0-9]*//g' | sed -e 's/DEFINER[ ]*=[ ]*[^*]*\*/\*/' | sed -E "s/(SET sql_mode\s+= ')(.*)(')/\1\3/" | sed "s/\`$database\`\.//g" > $temp_dir/$folder/db_structure.sql
+		# Volcado de la estructura
+		# -> Se omite el valor de AUTO_INCREMENT
+		# -> Se omite el valor de DEFINER
+		# -> Se establece el valor de sql_mode en ''
+		# -> Se establece el valor de collation_connection en utf8mb4_general_ci
+		mysqldump -u root -pldi14517 -d --skip-dump-date $database | sed 's/ AUTO_INCREMENT=[0-9]*//g' | sed -e 's/DEFINER[ ]*=[ ]*[^*]*\*/\*/' | sed -E "s/(SET sql_mode\s+= ')(.*)(')/\1\3/" | sed "s/\`$database\`\.//g" | sed -E 's/utf8([a-z0-9_]+)_ci/utf8mb4_general_ci/g' > $temp_dir/$folder/db_structure.sql
 
 		# Volcado de los valores de todas las tablas que inician con app_*
 		mysqldump -u root -pldi14517 -t --skip-dump-date --skip-triggers $database $(mysql -u root -pldi14517 -D $database -Bse "SHOW TABLES LIKE 'app_%'") > $temp_dir/$folder/initial_data.sql
