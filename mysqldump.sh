@@ -11,6 +11,7 @@ databases[negkit]=negkit
 databases[sicoimWebApp]=sicoim
 databases[mimakit]=mimakit
 databases[rtinfo]=rtinfo
+databases[fileManager]=files
 
 # Si se ejecuta sin parámetros, se hace un volcado de todas las bases de datos definidas en el arreglo; sino, se realiza sólo de las que han sido especificadas.
 if [ "$#" = "0" ]; then

@@ -13,6 +13,7 @@ titles[blackphp]="Black PHP"
 titles[negkit]=NegKit
 titles[sicoimWebApp]=SICOIM
 titles[mimakit]=MimaKit
+titles[fileManager]="File Manager"
 
 # Si no se le ha pasado ningún parámetro, entonces se ejecuta con todos los proyectos definidos en los arreglos.
 if [ "$#" = "0" ]; then

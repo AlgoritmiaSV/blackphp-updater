@@ -15,7 +15,7 @@ fi
 
 # Si no se especifica un parámetro, se realiza una versión de lanzamiento de cada proyecto
 if [ "$#" = "0" ]; then
-	for folder in blackphp mimakit negkit sicoimWebApp
+	for folder in blackphp mimakit negkit sicoimWebApp fileManager
 	do
 		$0 $folder
 	done

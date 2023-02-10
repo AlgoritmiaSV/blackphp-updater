@@ -5,6 +5,7 @@ databases[blackphp]=blackphp
 databases[negkit]=negkit
 databases[sicoimWebApp]=sicoim
 databases[mimakit]=mimakit
+databases[fileManager]=files
 
 # Posibles tipos de columna en la base de datos (Se deben registrar las faltantes)
 declare -A types
