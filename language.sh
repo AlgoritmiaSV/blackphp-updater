@@ -7,7 +7,7 @@
 # gettext
 
 # Lista de proyectos
-projects=(blackphp negkit sicoimWebApp mimakit fileManager)
+projects=(blackphp negkit sicoimWebApp mimakit fileManager inabve)
 
 # Base de datos de cada proyecto
 declare -A databases
@@ -16,6 +16,7 @@ databases[negkit]=negkit
 databases[sicoimWebApp]=sicoim
 databases[mimakit]=mimakit
 databases[fileManager]=files
+databases[inabve]=inabve
 
 # Lista de idiomas regionales
 locales=(es_ES en_US)
