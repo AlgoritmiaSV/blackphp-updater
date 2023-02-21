@@ -34,7 +34,7 @@ for folder in "$@"; do
 		echo "------------ MYSQLDUMP > $database to $folder"
 
 		# Navegamos hacia la carpeta db dentro del proyecto seleccionado
-		cd /store/Clouds/Mega/www/$folder/db/
+		cd /store/Clouds/Mega/www/$folder/db/mysql/
 
 		# Volcado de la estructura
 		# -> Se omite el valor de AUTO_INCREMENT
