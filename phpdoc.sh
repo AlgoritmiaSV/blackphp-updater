@@ -11,6 +11,9 @@
 declare -A titles
 titles[blackphp]="Black PHP"
 titles[negkit]=NegKit
+titles[negkitContracts]="NegKit Contracts"
+titles[negkitProjects]="NegKit Projects"
+titles[negkitServices]="NegKit Services"
 titles[sicoimWebApp]=SICOIM
 titles[mimakit]=MimaKit
 titles[fileManager]="File Manager"

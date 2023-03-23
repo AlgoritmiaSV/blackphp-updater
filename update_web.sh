@@ -20,6 +20,6 @@ $path/sass.sh
 $path/blackphp.sh
 $path/mysqldump.sh
 $path/language.sh
-#$path/orm_generator.sh
+$path/images.sh
 #cd /home/fajardo
 ./init.sh -p

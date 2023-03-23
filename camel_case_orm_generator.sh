@@ -3,6 +3,9 @@
 declare -A databases
 databases[blackphp]=blackphp
 databases[negkit]=negkit
+databases[negkitContracts]=contracts
+databases[negkitProjects]=projects
+databases[negkitServices]=services
 databases[sicoimWebApp]=sicoim
 databases[mimakit]=mimakit
 databases[fileManager]=files
