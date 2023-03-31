@@ -12,14 +12,13 @@ fi
 
 # Ruta de los scripts
 echo "Update web"
-path=/store/Clouds/Mega/insp_storage/2023/Algoritmia/blackphp_updater
+script_path=`realpath $0`
+path=`dirname $script_path`
 
 # Ejecución
 $path/minify_js.sh
 $path/sass.sh
-$path/blackphp.sh
+$path/blackphp_sync.sh
 $path/mysqldump.sh
 $path/language.sh
 $path/images.sh
-#cd /home/fajardo
-./init.sh -p

@@ -1,0 +1,9 @@
+{
+	"project_name": "The Project Name",
+	"project_path": "/Full/Path/To/Project",
+	"db_host": "MYSQL_HOST",
+	"db_user": "root",
+	"db_password": "ROOT_PASSWORD",
+	"database": "database_name",
+	"locales": ["en_US", "es_ES"]
+}

@@ -4,60 +4,62 @@
 
 # Realiza un volcado de la estructura de las bases de datos y los datos iniciales a archivos separados por cada proyecto. Se consideran datos iniciales en una base de datos, los contenidos en todas las tablas que inician con app_*
 
-# Para cada nombre de base de datos (Clave) se define un directorio (Valor)
-declare -A databases
-databases[blackphp]=blackphp
-databases[negkit]=negkit
-databases[negkitContracts]=contracts
-databases[negkitProjects]=projects
-databases[negkitServices]=services
-databases[sicoimWebApp]=sicoim
-databases[mimakit]=mimakit
-databases[rtinfo]=rtinfo
-databases[fileManager]=files
-databases[inabve]=inabve
+#Cargando configuración inicial
+script_path=`realpath $0`
+script_dir=`dirname $script_path`
+temp_path=`jq -r ".temp_path" $script_dir/config.json`
+config_files=$script_dir/projects
+cd $config_files
 
 # Si se ejecuta sin parámetros, se hace un volcado de todas las bases de datos definidas en el arreglo; sino, se realiza sólo de las que han sido especificadas.
 if [ "$#" = "0" ]; then
-	$0 ${!databases[@]}
+	for config_file in `ls -I _PROJECT_EXAMPLE.json`
+	do
+		$0 "$config_files/$config_file"
+	done
 	exit 1
 fi
 
+if [ ! -f "$1" ]; then
+	echo "File $1 not exists!"
+	exit 1
+fi
+project_name=`jq -r ".project_name" $1`
+project_path=`jq -r ".project_path" $1`
+db_host=`jq -r ".db_host" $1`
+db_user=`jq -r ".db_user" $1`
+db_password=`jq -r ".db_password" $1`
+database=`jq -r ".database" $1`
+project_folder=`basename $project_path`
+
 # Se guardan todos los volcados en una carpeta temporal, para luego comparar si hubieron cambios. Esto, para evitar que la sincronización en la nuble se repita si solo cambia la fecha de actualización.
-temp_dir=/store/bphp/mysqldump
-# Por cada nombre de base de datos recibida por parámetro...
-for folder in "$@"; do
-	# Comprueba si existe en el arreglo; sino, devolverá un error.
-	if [ -v databases[$folder] ]; then
-		if [ ! -d $temp_dir/$folder ]; then
-			mkdir -p $temp_dir/$folder
-		fi
+temp_dir=$temp_path/mysqldump/$project_folder
 
-		database=${databases[$folder]}
-		echo "------------ MYSQLDUMP > $database to $folder"
+# Comprueba si existe en el arreglo; sino, devolverá un error.
+if [ ! -d "$temp_dir" ]; then
+	mkdir -p $temp_dir
+fi
 
-		# Navegamos hacia la carpeta db dentro del proyecto seleccionado
-		cd /store/Clouds/Mega/www/$folder/db/mysql/
+echo "------------ MYSQLDUMP > $database to $project_folder"
 
-		# Volcado de la estructura
-		# -> Se omite el valor de AUTO_INCREMENT
-		# -> Se omite el valor de DEFINER
-		# -> Se establece el valor de sql_mode en ''
-		# -> Se establece el valor de collation_connection en utf8mb4_general_ci
-		mysqldump -u root -pldi14517 -d --skip-dump-date $database | sed 's/ AUTO_INCREMENT=[0-9]*//g' | sed -e 's/DEFINER[ ]*=[ ]*[^*]*\*/\*/' | sed -E "s/(SET sql_mode\s+= ')(.*)(')/\1\3/" | sed "s/\`$database\`\.//g" | sed -E 's/utf8([a-z0-9_]+)_ci/utf8mb4_general_ci/g' > $temp_dir/$folder/db_structure.sql
+# Navegamos hacia la carpeta db dentro del proyecto seleccionado
+cd $project_path/db/mysql/
 
-		# Volcado de los valores de todas las tablas que inician con app_*
-		mysqldump -u root -pldi14517 -t --skip-dump-date --skip-triggers $database $(mysql -u root -pldi14517 -D $database -Bse "SHOW TABLES LIKE 'app_%'") > $temp_dir/$folder/initial_data.sql
+# Volcado de la estructura
+# -> Se omite el valor de AUTO_INCREMENT
+# -> Se omite el valor de DEFINER
+# -> Se establece el valor de sql_mode en ''
+# -> Se establece el valor de collation_connection en utf8mb4_general_ci
+mysqldump -h $db_host -u $db_user -p$db_password -d --skip-dump-date $database | sed 's/ AUTO_INCREMENT=[0-9]*//g' | sed -e 's/DEFINER[ ]*=[ ]*[^*]*\*/\*/' | sed -E "s/(SET sql_mode\s+= ')(.*)(')/\1\3/" | sed "s/\`$database\`\.//g" | sed -E 's/utf8([a-z0-9_]+)_ci/utf8mb4_general_ci/g' > $temp_dir/db_structure.sql
 
-		# Se comprueba que exista un archivo previo de la estructura, y que es diferente. Si el archivo no existe, se crea.
-		result=`rsync -c --info=NAME1 "$temp_dir/$folder/db_structure.sql" ./db_structure.sql`
-		if [ "$result" != "" ]; then
-			echo $result
-			/store/Clouds/Mega/insp_storage/2023/Algoritmia/blackphp_updater/camel_case_orm_generator.sh $folder
-		fi
-		# Se comprueba que exista un archivo previo de los datos iniciales, y que es diferente. Si el archivo no existe, se crea.
-		rsync -c --info=NAME1 "$temp_dir/$folder/initial_data.sql" ./initial_data.sql
-	else
-		echo "    ERROR > PROJECT $folder NOT EXISTS"
-	fi
-done
+# Volcado de los valores de todas las tablas que inician con app_*
+mysqldump -h $db_host -u $db_user -p$db_password -t --skip-dump-date --skip-triggers $database $(mysql -h $db_host -u $db_user -p$db_password -D $database -Bse "SHOW TABLES LIKE 'app_%'") > $temp_dir/initial_data.sql
+
+# Se comprueba que exista un archivo previo de la estructura, y que es diferente. Si el archivo no existe, se crea.
+result=`rsync -c --info=NAME1 "$temp_dir/db_structure.sql" ./db_structure.sql`
+if [ "$result" != "" ]; then
+	echo $result
+	$script_dir/camel_case_orm_generator.sh "$1"
+fi
+# Se comprueba que exista un archivo previo de los datos iniciales, y que es diferente. Si el archivo no existe, se crea.
+rsync -c --info=NAME1 "$temp_dir/initial_data.sql" ./initial_data.sql
