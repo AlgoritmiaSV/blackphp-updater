@@ -5,9 +5,15 @@
 # REQUERIMIENTOS
 # sass (npm install -g sass)
 
+#Cargando configuración inicial
+script_path=`realpath $0`
+script_dir=`dirname $script_path`
+blackphp_path=`jq -r ".blackphp_path" $script_dir/config.json`
+temp_path=`jq -r ".temp_path" $script_dir/config.json`
+
 # Navegar hacia el directorio de BlackPHP donde se encuentrasn las hojas de estilos
-dir=/store/Clouds/Mega/www/blackphp/public
-temp_folder=/store/bphp/css
+dir=$blackphp_path/public
+temp_folder=$temp_path/css
 if [ ! -d $temp_folder ]; then
 	mkdir -p $temp_folder
 fi

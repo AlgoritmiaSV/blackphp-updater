@@ -1,68 +1,4 @@
 #!/bin/bash
-cash()
-{
-	rsync -ac --info=NAME1 $1/controllers/Cash.php $2/controllers/Cash.php
-	rsync -acr --delete --info=NAME1 $1/views/cash/ $2/views/cash/
-}
-
-catalog()
-{
-	rsync -ac --info=NAME1 $1/controllers/Catalog.php $2/controllers/Catalog.php
-	rsync -acr --delete --info=NAME1 $1/views/catalog/ $2/views/catalog/
-}
-
-sales()
-{
-	rsync -ac --info=NAME1 $1/controllers/Sales.php $2/controllers/Sales.php
-	rsync -acr --delete --info=NAME1 $1/views/sales/ $2/views/sales/
-}
-
-purchases()
-{
-	rsync -ac --info=NAME1 $1/controllers/Purchases.php $2/controllers/Purchases.php
-	rsync -acr --delete --info=NAME1 $1/views/purchases/ $2/views/purchases/
-}
-
-user()
-{
-	rsync -ac --info=NAME1 $1/controllers/User.php $2/controllers/User.php
-	rsync -acr --delete --info=NAME1 $1/views/user/ $2/views/user/
-}
-
-index()
-{
-	rsync -ac --info=NAME1 $1/controllers/index.php $2/controllers/index.php
-}
-
-reports()
-{
-	rsync -ac --info=NAME1 $1/controllers/Reports.php $2/controllers/Reports.php
-	rsync -acr --delete --info=NAME1 $1/views/reports/ $2/views/reports/
-}
-
-settings()
-{
-	rsync -ac --info=NAME1 $1/controllers/Settings.php $2/controllers/Settings.php
-	rsync -acr --delete --info=NAME1 --exclude "info_details.html" $1/views/settings/ $2/views/settings/
-}
-
-usage()
-{
-	echo Available options:
-	declare -F | awk {'print "\t" $3'}
-}
-
-all()
-{
-	options=`declare -F | awk {'print $3'}`
-	for option in $options; do
-		if [ "$option" == "all" -o "$option" == "usage" ]; then
-			continue
-		fi
-		$option $1 $2
-	done
-}
-
 #	Main
 # Se requieren permisos de root (Sólo en Linux)
 if [[ $EUID -ne 0 ]]; then
@@ -71,18 +7,41 @@ if [[ $EUID -ne 0 ]]; then
 	su -c "$command"
 	exit 1
 fi
-source=/store/Clouds/Mega/www/negkit
-destiny=/store/Clouds/Mega/www/mimakit
-if [ "$#" = "0" ]; then
-	usage
-else
-	while [ "$#" -gt "0" ]; do
-		if [ `type -t $1`"" == 'function' ]; then
-			$1 $source $destiny
-		else
-			echo "Unrecognized parametter $1"
-			usage
-		fi
-		shift
+script_path=`realpath $0`
+script_dir=`dirname $script_path`
+config_files=$script_dir/projects
+
+index=0
+item=`jq ".[0]" $script_dir/sync_modules.json`
+while [ "$item" != "null" ]; do
+	module=`echo "$item" | jq -r ".module"`
+	from=`echo "$item" | jq -r ".from"`
+	to=`echo "$item" | jq -r ".to"`
+	elements=`echo "$item" | jq -r ".sync"`
+	d_index=0
+	d_item=`echo "$to" | jq -r ".[0]"`
+	while [ "$d_item" != "null" ]; do
+		echo "----Syncing $module from $from to $d_item"
+
+		source_path=`jq -r ".project_path" $config_files/$from.json`
+		destiny_path=`jq -r ".project_path" $config_files/$d_item.json`
+
+		e_index=0
+		element=`echo "$elements" | jq -r ".[0]"`
+		while [ "$element" != "null" ]; do
+			if [ -f "$source_path/$element" ]; then
+				rsync -ac --info=NAME1 "$source_path/$element" "$destiny_path/$element"
+			fi
+			if [ -d "$source_path/$element" ]; then
+				rsync -acr --delete --info=NAME1 --exclude "info_details.html" "$source_path/$element/" "$destiny_path/$element/"
+			fi
+			((e_index=e_index+1))
+			element=`echo "$elements" | jq -r ".[$e_index]"`
+		done
+
+		((d_index=d_index+1))
+		d_item=`echo "$to" | jq -r ".[$d_index]"`
 	done
-fi
+	((index=index+1))
+	item=`jq ".[$index]" $script_dir/sync_modules.json`
+done

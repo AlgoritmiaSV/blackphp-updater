@@ -1,2 +1,4 @@
 /projects/[a-zA-Z]*
 /config.json
+*_old.*
+/.vscode
