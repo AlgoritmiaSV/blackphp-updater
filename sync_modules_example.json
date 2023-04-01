@@ -1,0 +1,28 @@
+[
+	{
+		"module":"MODULE 1 NAME",
+		"sync":[
+			"relative/path/file_or_folder_1",
+			"relative/path/file_or_folder_2"
+		],
+		"from":"SOURCE_PROJECT",
+		"to":[
+			"DESTINY_PROJECT_1",
+			"DESTINY_PROJECT_2",
+			"DESTINY_PROJECT_3"
+		]
+	},
+	{
+		"module":"MODULE 2 NAME",
+		"sync":[
+			"relative/path/file_or_folder_1",
+			"relative/path/file_or_folder_2"
+		],
+		"from":"SOURCE_PROJECT",
+		"to":[
+			"DESTINY_PROJECT_1",
+			"DESTINY_PROJECT_2",
+			"DESTINY_PROJECT_3"
+		]
+	}
+]
