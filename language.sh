@@ -5,6 +5,12 @@
 
 # REQUERIMIENTOS
 # gettext
+if [[ $EUID -ne 0 ]]; then
+	echo "This script must be run as root"
+	command="${0} ${@}"
+	su -c "$command"
+	exit 1
+fi
 
 #Cargando configuración inicial
 script_path=`realpath $0`
@@ -80,13 +86,14 @@ for locale in $locales; do
 		mkdir -p "$locale_dir"
 	fi
 	directory="$project_path/locale/$locale/LC_MESSAGES"
-	if [ -d "$directory" ]; then
-		cd $directory
-		php $script_dir/po_sort.php $project_folder $locale
-		rsync -c $locale_dir/messages.po $directory/messages.po
-		if [ "messages.po" -nt "messages.mo" ]; then
-			msgfmt messages.po
-			echo "$locale Changed"
-		fi
+	if [ ! -d "$directory" ]; then
+		mkdir -p "$directory"
+	fi
+	cd $directory
+	php $script_dir/po_sort.php "$1" $locale
+	rsync -c $locale_dir/messages.po $directory/messages.po
+	if [ "messages.po" -nt "messages.mo" ]; then
+		msgfmt messages.po
+		echo "$locale Changed"
 	fi
 done

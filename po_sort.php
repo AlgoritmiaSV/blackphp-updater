@@ -1,15 +1,20 @@
 <?php
+	date_default_timezone_set('America/El_Salvador');
 	$headers = Array();
 	$messages = Array("0" => Array());
-	$project = $argv[1] == null ? "blackphp" : $argv[1];
+	$project_config = $argv[1] == null ? "projects/blackphp.json" : $argv[1];
 	$locale = $argv[2] == null ? "en_US" : $argv[2];
-	$temp_po = "/store/bphp/locale/$project/$locale/messages.po";
-	$source_po = "/store/Clouds/Mega/www/$project/locale/$locale/LC_MESSAGES/messages.po";
-	$required = "/store/bphp/locale/$project/required.txt";
+	$blackphp = json_decode(file_get_contents(dirname(__FILE__) . "/config.json"), true);
+	$project = json_decode(file_get_contents($project_config), true);
+	$project_folder = basename($project["project_path"]);
+
+	$temp_po = $blackphp["temp_path"] . "/locale/$project_folder/$locale/messages.po";
+	$source_po = $project["project_path"] . "/locale/$locale/LC_MESSAGES/messages.po";
+	$required = $blackphp["temp_path"] . "/locale/$project_folder/required.txt";
 
 	if(!file_exists($source_po))
 	{
-		die("File not found!\n\n");
+		die("File $source_po not found!\n\n");
 	}
 	$content = file_get_contents($source_po);
 	$content = explode("\n", $content);
@@ -62,10 +67,10 @@
 	}
 
 	$txt = "";
-	foreach($headers as $header)
+	/*foreach($headers as $header)
 	{
 		$txt .= "$header\n";
-	}
+	}*/
 	$total = 0;
 	$not_required = 0;
 	foreach($messages as $context => $list)
@@ -107,7 +112,7 @@
 	}
 	if($not_required > 0)
 	{
-		echo "$not_required translations not required\n";
+		echo "$locale: $not_required translations not required\n";
 	}
 	$txt .= "\n# " . $total . " messages translated.\n";
 	$not_translated = 0;
@@ -127,9 +132,43 @@
 	}
 	if($not_translated > 0)
 	{
-		echo "$not_translated untranslated messages\n";
+		echo "$locale: $not_translated untranslated messages\n";
 	}
+	$lang_name = Array(
+		"en_US" => "ENGLISH",
+		"es_ES" => "SPANISH",
+		"it_IT" => "ITALIAN"
+	);
+	$file_content = '';
+	if($not_required > 0 || $not_translated > 0)
+	{
+		$headers = Array(
+			'# PACK OF ' . $lang_name[$locale] . ' LANGUAGE FOR ' . strtoupper($project["project_name"]),
+			'# Copyright (C)2022-' . Date("Y") . ' Red Teleinformática',
+			'# This file is distributed under the same license as the PACKAGE ' . $project["project_name"] . '.',
+			'# Edwin Fajardo <contacto@edwinfajardo.com>, 2022.',
+			'#',
+			'#, fuzzy',
+			'msgid ""',
+			'msgstr ""',
+			'"Project-Id-Version: ' . $project["project_name"] . ' 1.0\n"',
+			'"Report-Msgid-Bugs-To: \n"',
+			$headers[10],
+			'"PO-Revision-Date: ' . Date("Y-m-d H:i") .  '+UTC-6\n"',
+			'"Last-Translator: ' . $project["lang_translator"] . '\n"',
+			'"Language-Team: ' . $project["lang_team"] . '\n"',
+			'"Language: ' . $locale . '\n"',
+			'"MIME-Version: 1.0\n"',
+			'"Content-Type: text/plain; charset=UTF-8\n"',
+			'"Content-Transfer-Encoding: 8bit\n"'
+		);
+	}
+	foreach($headers as $line)
+	{
+		$file_content .= ($line . "\n");
+	}
+	$file_content .= $txt;
 	$fd = fopen($temp_po, "w+");
-	fwrite($fd, $txt);
+	fwrite($fd, $file_content);
 	fclose($fd);
 ?>

@@ -5,5 +5,7 @@
 	"db_user": "root",
 	"db_password": "ROOT_PASSWORD",
 	"database": "database_name",
-	"locales": ["en_US", "es_ES"]
+	"locales": ["en_US", "es_ES"],
+	"lang_translator": "Edwin Fajardo <contacto@edwinfajardo.com>",
+	"lang_team": "Red Teleinformática <info@redteleinformatica.com>"
 }
