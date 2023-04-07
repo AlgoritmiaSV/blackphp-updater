@@ -56,7 +56,7 @@ fi
 cd $project_path
 echo "    Setting date..."
 last_update=`jq -r ".last_update" app_info.json`
-modified=`find . -type f -newermt "$last_update" ! -name "app_info.json" ! -path "./node_modules/*" ! -path "./composer/*" ! -path "./.git/*" ! -path "./.vscode/*" | wc -l`
+modified=`find . -type f -newermt "$last_update" ! -name "app_info.json" ! -name "*_updates.sql" ! -path "./node_modules/*" ! -path "./composer/*" ! -path "./.git/*" ! -path "./.vscode/*" | wc -l`
 if [ $modified -gt "0" ]; then
 	last_update=`date +"%Y-%m-%d %H:%M:%S"`
 	version=`jq -r ".version" app_info.json`
