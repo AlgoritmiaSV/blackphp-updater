@@ -67,10 +67,6 @@
 	}
 
 	$txt = "";
-	/*foreach($headers as $header)
-	{
-		$txt .= "$header\n";
-	}*/
 	$total = 0;
 	$not_required = 0;
 	foreach($messages as $context => $list)
