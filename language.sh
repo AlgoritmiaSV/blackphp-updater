@@ -77,6 +77,13 @@ if [ "$app_payments" = "1" ]; then
 	mysql --skip-column-names -h $db_host -u $db_user -p$db_password $database -e "SELECT CONCAT('payments', ptype_name) FROM app_payments" >> required.txt
 fi
 
+# Evaluando si existe la tabla app_documents
+app_documents=`mysql --skip-column-names -h $db_host -u $db_user -p$db_password information_schema -e "SELECT 1 FROM TABLES WHERE TABLE_SCHEMA = '$database' AND TABLE_NAME = 'app_documents'"`
+if [ "$app_documents" = "1" ]; then
+	# Extrayendo las formas de pago de la base de datos
+	mysql --skip-column-names -h $db_host -u $db_user -p$db_password $database -e "SELECT document_name FROM app_documents" >> required.txt
+fi
+
 # Ordenando las palabras en el archivo required, y eliminando las repetidas
 sort -u -o required.txt required.txt
 
