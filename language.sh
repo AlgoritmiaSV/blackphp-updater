@@ -68,7 +68,7 @@ grep -nrw "$project_path/controllers/" -Ee '_\([^\)]+\)'  | sed -E 's/\)/\)\n/g'
 # -> Descripción de los métodos
 # -> Nombre de los temas
 # -> Nombre singular y plural de los elementos
-mysql --skip-column-names -h $db_host -u $db_user -p$db_password $database -e "SELECT module_name FROM app_modules WHERE status = 1 UNION ALL SELECT method_name FROM app_methods WHERE status = 1 UNION ALL SELECT theme_name FROM app_themes UNION ALL SELECT method_description FROM app_methods WHERE status = 1 UNION ALL SELECT element_name FROM app_elements UNION ALL SELECT singular_name FROM app_elements" >> required.txt
+mysql --skip-column-names -h $db_host -u $db_user -p$db_password $database -e "SELECT module_name FROM app_modules WHERE status = 1 UNION ALL SELECT method_name FROM app_methods WHERE status = 1 UNION ALL SELECT theme_name FROM app_themes UNION ALL SELECT method_description FROM app_methods WHERE status = 1 UNION ALL SELECT element_name FROM app_elements UNION ALL SELECT singular_name FROM app_elements UNION ALL SELECT locale_name FROM app_locales" >> required.txt
 
 # Evaluando si existe la tabla app_payments
 app_payments=`mysql --skip-column-names -h $db_host -u $db_user -p$db_password information_schema -e "SELECT 1 FROM TABLES WHERE TABLE_SCHEMA = '$database' AND TABLE_NAME = 'app_payments'"`
