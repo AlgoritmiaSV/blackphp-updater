@@ -59,7 +59,13 @@ files=0
 if [ ! -d "$project_path" ]
 then
 	# Instalación nueva. Crea un directorio
-	mkdir $project_path
+	mkdir -p $project_path
+fi
+# Comprueba si hay archivos en el directorio (Si no hay archivos, procede como instalación nueva)
+existing_files=`ls $project_path | wc -l`
+if [ "$existing_files" = "0" ]; then
+	# Instalación nueva. Crea un directorio
+	mkdir -p $project_path
 	# Cuenta los archivos a transferir con rsync --stats (el parámetro n es esencial para no ejecutar de una vez)
 	files=`rsync -avn --stats --exclude ".git/" --exclude ".vscode" --exclude "db/" --exclude "README.md" --exclude ".gitignore" --exclude "entities/" --exclude "app_info.json" $blackphp_path/ $project_path/ | grep "files transferred" | cut -c 38-`
 	#Realiza la sincronización

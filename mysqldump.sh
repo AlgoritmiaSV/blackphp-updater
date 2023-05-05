@@ -43,8 +43,11 @@ fi
 echo "------------ MYSQLDUMP > $database to $project_folder"
 
 # Navegamos hacia la carpeta db dentro del proyecto seleccionado
-cd $project_path/db/mysql/
-
+destiny_path=$project_path/db/mysql/
+if [ ! -d "$destiny_path" ]; then
+	mkdir -p $destiny_path
+fi
+cd $destiny_path
 # Volcado de la estructura
 # -> Se omite el valor de AUTO_INCREMENT
 # -> Se omite el valor de DEFINER

@@ -292,4 +292,8 @@ done
 echo ""
 
 #Sincronizar
-rsync -cr --delete --info=NAME1 $temp_dir/ $project_path/models/orm/
+destiny_path=$project_path/models/orm/
+if [ ! -d "$destiny_path" ]; then
+	mkdir -p $destiny_path
+fi
+rsync -cr --delete --info=NAME1 $temp_dir/ $destiny_path
