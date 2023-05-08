@@ -42,14 +42,16 @@ if [ $modified -gt "0" ]; then
 	version=`jq -r ".version" app_info.json`
 	number=`jq -r ".number" app_info.json`
 	number=$((number+1))
-	copyright=`jq -r ".copyright" app_info.json`
-	website=`jq -r ".website" app_info.json`
+	copyright_year=`jq -r ".copyright_year" app_info.json`
+	copyright_author=`jq -r ".copyright_author" app_info.json`
+	copyright_link=`jq -r ".copyright_link" app_info.json`
 	jq -n --arg last_update "$last_update" \
 			--arg version "$version" \
 			--arg number "$number" \
-			--arg copyright "$copyright" \
-			--arg website "$website" \
-	'{"system_name": "BlackPHP", "version": "\($version)", "number": "\($number)", "last_update": "\($last_update)", "copyright": "\($copyright)", "website": "\($website)"}' > app_info.json
+			--arg copyright_year "$copyright_year" \
+			--arg copyright_author "$copyright_author" \
+			--arg copyright_link "$copyright_link" \
+	'{"system_name": "BlackPHP", "version": "\($version)", "number": "\($number)", "last_update": "\($last_update)", "copyright_year": "\($copyright_year)", "copyright_author": "\($copyright_author)", "copyright_link": "\($copyright_link)"}' > app_info.json
 fi
 
 # Cantidad de archivos a modificar (Si es cero, no se actualiza)

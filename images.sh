@@ -48,6 +48,10 @@ grep -nrw "$project_path/views/" -Ee 'images.*png' | sed -E 's/(.*src=\"public\/
 grep -nrw "$project_path/libs/" -Ee 'images.*png' | sed -E 's/(.*\"public\/images\/)(.*png)(.*)/\2/' | grep -v '\$' >> referenced_images.txt
 grep -nrw "$project_path/controllers/" -Ee 'images.*png' | sed -E 's/(.*\"public\/images\/)(.*png)(.*)/\2/' | grep -v '\$' >> referenced_images.txt
 
+grep -nrw "$project_path/views/" -Ee 'images.*jpg' | sed -E 's/(.*src=\"public\/images\/)(.*jpg)(.*)/\2/' | grep -v '{{' >> referenced_images.txt
+grep -nrw "$project_path/libs/" -Ee 'images.*jpg' | sed -E 's/(.*\"public\/images\/)(.*jpg)(.*)/\2/' | grep -v '\$' >> referenced_images.txt
+grep -nrw "$project_path/controllers/" -Ee 'images.*jpg' | sed -E 's/(.*\"public\/images\/)(.*jpg)(.*)/\2/' | grep -v '\$' >> referenced_images.txt
+
 # Extrayendo palabras y frases de las talas del sistema
 # -> Nombre de los módulos
 # -> Nombre de los métodos
@@ -58,6 +62,7 @@ sort -u -o referenced_images.txt referenced_images.txt
 
 cd $project_path/public/images/
 find . -name '*.png' ! -path './files/*' | sed -E 's/\.\///g' > $temp_dir/images.txt
+find . -name '*.jpg' ! -path './files/*' | sed -E 's/\.\///g' >> $temp_dir/images.txt
 sort -u -o $temp_dir/images.txt $temp_dir/images.txt
 difference=`diff -y --suppress-common-lines $temp_dir/referenced_images.txt $temp_dir/images.txt`
 if [ "$difference" != "" ]; then
