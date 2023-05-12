@@ -43,7 +43,7 @@ if [ ! -d "$temp_dir" ]; then
 fi
 cd $temp_dir
 
-# Extrayendo palabras y frases de las vistas
+# Extrayendo imágenes de las vistas
 grep -nrw "$project_path/views/" -Ee 'images.*png' | sed -E 's/(.*src=\"public\/images\/)(.*png)(.*)/\2/' | grep -v '{{' > referenced_images.txt
 grep -nrw "$project_path/libs/" -Ee 'images.*png' | sed -E 's/(.*\"public\/images\/)(.*png)(.*)/\2/' | grep -v '\$' >> referenced_images.txt
 grep -nrw "$project_path/controllers/" -Ee 'images.*png' | sed -E 's/(.*\"public\/images\/)(.*png)(.*)/\2/' | grep -v '\$' >> referenced_images.txt
@@ -52,10 +52,13 @@ grep -nrw "$project_path/views/" -Ee 'images.*jpg' | sed -E 's/(.*src=\"public\/
 grep -nrw "$project_path/libs/" -Ee 'images.*jpg' | sed -E 's/(.*\"public\/images\/)(.*jpg)(.*)/\2/' | grep -v '\$' >> referenced_images.txt
 grep -nrw "$project_path/controllers/" -Ee 'images.*jpg' | sed -E 's/(.*\"public\/images\/)(.*jpg)(.*)/\2/' | grep -v '\$' >> referenced_images.txt
 
-# Extrayendo palabras y frases de las talas del sistema
+# Extrayendo imágenes de las tablas del sistema
 # -> Nombre de los módulos
 # -> Nombre de los métodos
 mysql --skip-column-names -h $db_host -u $db_user -p$db_password $database -e "SELECT CONCAT('outline/', module_icon, '.png') FROM app_modules WHERE status = 1 UNION ALL SELECT CONCAT(method_icon, '.png') FROM app_methods WHERE status = 1" >> referenced_images.txt
+
+# Extrayendo íconos de app_info.json
+jq -r '.technical_support[].icon' "$project_path/app_info.json" >> referenced_images.txt
 
 # Ordenando las palabras en el archivo required, y eliminando las repetidas
 sort -u -o referenced_images.txt referenced_images.txt
