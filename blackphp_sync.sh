@@ -63,6 +63,7 @@ if [ "$existing_files" = "0" ]; then
 	files=`rsync -avn --stats --exclude ".git/" --exclude ".vscode" --exclude "db/" --exclude "README.md" --exclude ".gitignore" --exclude "entities/" --exclude "app_info.json" $blackphp_path/ $project_path/ | grep "files transferred" | cut -c 38-`
 	#Realiza la sincronización
 	rsync -av --exclude ".git/" --exclude ".vscode" --exclude "db/" --exclude "README.md" --exclude ".gitignore" --exclude "entities/"  --exclude "app_info.json" $blackphp_path/ $project_path/
+	files=`echo $files | sed -e 's/,//'`
 else
 	# Comprueba la cantidad de archivos a transferir
 	files=`rsync -rcn --stats --exclude ".git/" --exclude ".vscode" --exclude "db/" --include "controllers/devUtils.php" --include "controllers/error.php" --include "controllers/Resources.php" --exclude "controllers/*" --exclude "public/icons" --exclude "public/images" --exclude "favicon.ico" --exclude "models/" --exclude "README.md" --exclude "views/*" --exclude ".gitignore" --exclude "entities/" --exclude "locale/" --exclude "app_info.json" --exclude "/config.php" --exclude "public/manifest.json" $blackphp_path/ $project_path/ | grep "files transferred" | cut -c 38-`
