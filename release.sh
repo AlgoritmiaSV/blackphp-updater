@@ -101,11 +101,12 @@ if [ ! -d $node_dir ]; then
 	mkdir -p $node_dir
 fi
 node_folders=$node_dir/$project_folder.txt
-for i in `cat $project_path/libs/View.php | grep "node_modules" | tr -d "'" | tr -d ","`; do
+echo "" > $node_folders
+for i in `cat $project_path/libs/View.php | grep "node_modules" | grep -v "=" | tr -d "'" | tr -d ","`; do
 	dirname $i >> $node_folders
 done
 sort -u -o $node_folders $node_folders
-for i in `cat $node_folders`; do
+for i in `cat $node_folders | sed '/^$/d'`; do
 	if [ ! -d $production/$i/ ]; then
 		mkdir -p $production/$i/
 	fi
