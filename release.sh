@@ -72,7 +72,45 @@ rsync -cr --delete --chown=fajardo:fajardo --chmod=D755,F644 --exclude ".git" --
 echo "    Minifying PHP..."
 while read -r php_file; do
 	if [ ! -f "$production/$php_file" -o "$project_path/$php_file" -nt "$production/$php_file" ]; then
-		/usr/bin/php -w $project_path/$php_file > $production/$php_file
+		rsync "$project_path/$php_file" "$production/$php_file"
+		php_directory=`dirname "$production/$php_file"`
+		if [[ "$php_directory" == "$production/./controllers"* ]]; then
+			variable_list=$temp_path/vars.txt
+			grep -v 'protected $' "$production/$php_file" | grep -v 'public $' | grep -v 'private $' | grep -Ee '\$[A-Za-z0-9_]+' | sed -E 's/\$/\n\$/g' | sed -E 's/(\$[A-Za-z0-9_]+)(.*)/\1/g' | grep -Ev '\s' > $variable_list
+			sort -ru -o $variable_list $variable_list
+			var_index=0
+			letters=({a..z})
+			count=${#letters[@]}
+			prefix_index=-1
+			reserved=false
+			for var in `cat $variable_list`; do
+				for item in \$this \$_POST \$_GET \$_SERVER \$_SESSION '$";'; do
+					if [[ "$var" == "$item" ]]; then
+						reserved=true
+						break
+					fi
+				done
+				if [[ $reserved == true ]]; then
+					reserved=false
+					continue
+				fi
+				prefix=""
+				var_name=${letters[var_index]}
+				if [ $prefix_index -gt -1 ]; then
+					prefix=${letters[prefix_index]}
+				fi
+				sed -i "s/\(public\|private\|protected\)\( \\$\)/___\1___/g" "$production/$php_file"
+				sed -i "s/$var/\$$prefix$var_name/g" "$production/$php_file"
+				sed -i "s/___\(public\|private\|protected\)___/\1 $/g" "$production/$php_file"
+				((var_index=var_index+1))
+				if [ $var_index -eq $count ]; then
+					var_index=0
+					((prefix_index=prefix_index+1))
+				fi
+			done
+		fi
+		production_code=`/usr/bin/php -w $production/$php_file`
+		echo "$production_code" > $production/$php_file
 		echo "    $php_file"
 	fi
 done < <(find . -type f -name "*.php" ! -name "default_config.php" ! -path "./entities/*")
