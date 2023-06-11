@@ -83,6 +83,7 @@ while read -r php_file; do
 			count=${#letters[@]}
 			prefix_index=-1
 			reserved=false
+			sed -i "s/\(public\|private\|protected\)\( \\$\)/___\1___/g" "$production/$php_file"
 			for var in `cat $variable_list`; do
 				for item in \$this \$_POST \$_GET \$_SERVER \$_SESSION '$";'; do
 					if [[ "$var" == "$item" ]]; then
@@ -99,15 +100,15 @@ while read -r php_file; do
 				if [ $prefix_index -gt -1 ]; then
 					prefix=${letters[prefix_index]}
 				fi
-				sed -i "s/\(public\|private\|protected\)\( \\$\)/___\1___/g" "$production/$php_file"
-				sed -i "s/$var/\$$prefix$var_name/g" "$production/$php_file"
-				sed -i "s/___\(public\|private\|protected\)___/\1 $/g" "$production/$php_file"
+				sed -i "s/$var/\$#TEMP#$prefix$var_name/g" "$production/$php_file"
 				((var_index=var_index+1))
 				if [ $var_index -eq $count ]; then
 					var_index=0
 					((prefix_index=prefix_index+1))
 				fi
 			done
+			sed -i "s/___\(public\|private\|protected\)___/\1 $/g" "$production/$php_file"
+			sed -i "s/#TEMP#//g" "$production/$php_file"
 		fi
 		production_code=`/usr/bin/php -w $production/$php_file`
 		echo "$production_code" > $production/$php_file
