@@ -85,7 +85,7 @@ while read -r php_file; do
 			reserved=false
 			sed -i "s/\(public\|private\|protected\)\( \\$\)/___\1___/g" "$production/$php_file"
 			for var in `cat $variable_list`; do
-				for item in \$this \$_POST \$_GET \$_SERVER \$_SESSION '$";'; do
+				for item in \$this \$_POST \$_GET \$_SERVER \$_SESSION \$_FILES \$_COOKIE \$_REQUEST \$_ENV '$";'; do
 					if [[ "$var" == "$item" ]]; then
 						reserved=true
 						break
