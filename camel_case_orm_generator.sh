@@ -88,7 +88,7 @@ for table_data in $tables; do
 
 	# Consultando columnas y creando propiedades
 	# Esta consulta obtiene resultados en tres columnas
-	columns=`mysql --skip-column-names -h $db_host -u $db_user -p$db_password -e "SELECT COLUMN_NAME, DATA_TYPE, IF(COLUMN_COMMENT = '', '-', REPLACE(COLUMN_COMMENT, ' ', '$space')) AS COMMENT, REPLACE(COLUMN_DEFAULT, ' ', '$space') AS CDEFAULT FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '$database' AND TABLE_NAME = '$table_name'"`
+	columns=`mysql --skip-column-names -h $db_host -u $db_user -p$db_password -e "SELECT COLUMN_NAME, DATA_TYPE, IF(COLUMN_COMMENT = '', '-', REPLACE(COLUMN_COMMENT, ' ', '$space')) AS COMMENT, REPLACE(COLUMN_DEFAULT, ' ', '$space') AS CDEFAULT, CHARACTER_MAXIMUM_LENGTH FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '$database' AND TABLE_NAME = '$table_name'"`
 	column_position=0
 	column_name=""
 	column_type=""
@@ -118,11 +118,15 @@ for table_data in $tables; do
 			continue
 		fi
 		if [ $column_position -eq 3 ]; then
-			column_position=0
 			echo -ne "\t/** @var ${types[$column_type]} \$$column_name" >> $file
 			echo " $column_comment */" | sed -e "s/$space/\ /g" >> $file
 			echo -e "\tprivate \$$column_name;" >> $file
 			echo "" >> $file
+			((column_position=column_position+1))
+			continue
+		fi
+		if [ $column_position -eq 4 ]; then
+			column_position=0
 		fi
 	done
 
@@ -199,7 +203,6 @@ for table_data in $tables; do
 			continue
 		fi
 		if [ $column_position -eq 3 ]; then
-			column_position=0
 			column_default=$column_data
 			if [ ! "$column_default" = "NULL" ]; then
 				re='^[+-]?[0-9]+([.][0-9]+)?$'
@@ -209,6 +212,11 @@ for table_data in $tables; do
 					echo -e "\t\t\t\$this->$column_name = $column_default;" | sed -e "s/$space/\ /g" >> $file
 				fi
 			fi
+			((column_position=column_position+1))
+			continue
+		fi
+		if [ $column_position -eq 4 ]; then
+			column_position=0
 		fi
 	done
 	echo -e "\t\t}" >> $file
@@ -236,6 +244,11 @@ for table_data in $tables; do
 		fi
 		if [ $column_position -eq 3 ]; then
 			property_name=`echo $column_name | sed -r 's/(^|_)(\w)/\U\2/g'`
+			((column_position=column_position+1))
+			continue
+		fi
+		if [ $column_position -eq 4 ]; then
+			text_length=$column_data
 			echo "" >> $file
 			echo -e "\tpublic function get${property_name}()" >> $file
 			echo -e "\t{" >> $file
@@ -244,6 +257,9 @@ for table_data in $tables; do
 			echo -e "" >> $file
 			echo -e "\tpublic function set${property_name}(\$value)" >> $file
 			echo -e "\t{" >> $file
+			if [ ! "$text_length" = "NULL" ]; then
+				echo -e "\t\tself::validateStringSize(\$value, $text_length);" >> $file
+			fi
 			echo -e "\t\t\$this->$column_name = \$value === null ? null : (${types[$column_type]})\$value;" >> $file
 			echo -e "\t}" >> $file
 			column_position=0
