@@ -32,6 +32,7 @@ db_host=`jq -r ".db_host" $1`
 db_user=`jq -r ".db_user" $1`
 db_password=`jq -r ".db_password" $1`
 database=`jq -r ".database" $1`
+db_prefix=`jq -r ".db_prefix" $1`
 project_folder=`basename $project_path`
 temp_dir=$temp_path/images/$project_folder
 
@@ -55,7 +56,7 @@ grep -nrw "$project_path/controllers/" -Ee 'images.*jpg' | sed -E 's/(.*\"public
 # Extrayendo imágenes de las tablas del sistema
 # -> Nombre de los módulos
 # -> Nombre de los métodos
-mysql --skip-column-names -h $db_host -u $db_user -p$db_password $database -e "SELECT CONCAT('outline/', module_icon, '.png') FROM app_modules WHERE status = 1 UNION ALL SELECT CONCAT(method_icon, '.png') FROM app_methods WHERE status = 1" >> referenced_images.txt
+mysql --skip-column-names -h $db_host -u $db_user -p$db_password $database -e "SELECT CONCAT('outline/', module_icon, '.png') FROM ${db_prefix}app_modules WHERE status = 1 UNION ALL SELECT CONCAT(method_icon, '.png') FROM ${db_prefix}app_methods WHERE status = 1" >> referenced_images.txt
 
 # Extrayendo íconos de app_info.json
 jq -r '.technical_support[].icon' "$project_path/app_info.json" >> referenced_images.txt

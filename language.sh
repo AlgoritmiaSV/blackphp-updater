@@ -38,6 +38,7 @@ db_host=`jq -r ".db_host" $1`
 db_user=`jq -r ".db_user" $1`
 db_password=`jq -r ".db_password" $1`
 database=`jq -r ".database" $1`
+db_prefix=`jq -r ".db_prefix" $1`
 project_folder=`basename $project_path`
 temp_dir=$temp_path/locale/$project_folder
 
@@ -68,20 +69,20 @@ grep -nrw "$project_path/controllers/" -Ee '_\([^\)]+\)'  | sed -E 's/\)/\)\n/g'
 # -> Descripción de los métodos
 # -> Nombre de los temas
 # -> Nombre singular y plural de los elementos
-mysql --skip-column-names -h $db_host -u $db_user -p$db_password $database -e "SELECT module_name FROM app_modules WHERE status = 1 UNION ALL SELECT method_name FROM app_methods WHERE status = 1 UNION ALL SELECT theme_name FROM app_themes UNION ALL SELECT method_description FROM app_methods WHERE status = 1 UNION ALL SELECT element_name FROM app_elements UNION ALL SELECT singular_name FROM app_elements UNION ALL SELECT locale_name FROM app_locales" >> required.txt
+mysql --skip-column-names -h $db_host -u $db_user -p$db_password $database -e "SELECT module_name FROM ${db_prefix}app_modules WHERE status = 1 UNION ALL SELECT method_name FROM ${db_prefix}app_methods WHERE status = 1 UNION ALL SELECT theme_name FROM ${db_prefix}app_themes UNION ALL SELECT method_description FROM ${db_prefix}app_methods WHERE status = 1 UNION ALL SELECT element_name FROM ${db_prefix}app_elements UNION ALL SELECT singular_name FROM ${db_prefix}app_elements UNION ALL SELECT locale_name FROM ${db_prefix}app_locales" >> required.txt
 
 # Evaluando si existe la tabla app_payments
-app_payments=`mysql --skip-column-names -h $db_host -u $db_user -p$db_password information_schema -e "SELECT 1 FROM TABLES WHERE TABLE_SCHEMA = '$database' AND TABLE_NAME = 'app_payments'"`
+app_payments=`mysql --skip-column-names -h $db_host -u $db_user -p$db_password information_schema -e "SELECT 1 FROM TABLES WHERE TABLE_SCHEMA = '$database' AND TABLE_NAME = '${db_prefix}app_payments'"`
 if [ "$app_payments" = "1" ]; then
 	# Extrayendo las formas de pago de la base de datos
-	mysql --skip-column-names -h $db_host -u $db_user -p$db_password $database -e "SELECT CONCAT('payments', ptype_name) FROM app_payments" >> required.txt
+	mysql --skip-column-names -h $db_host -u $db_user -p$db_password $database -e "SELECT CONCAT('payments', ptype_name) FROM ${db_prefix}app_payments" >> required.txt
 fi
 
 # Evaluando si existe la tabla app_documents
-app_documents=`mysql --skip-column-names -h $db_host -u $db_user -p$db_password information_schema -e "SELECT 1 FROM TABLES WHERE TABLE_SCHEMA = '$database' AND TABLE_NAME = 'app_documents'"`
+app_documents=`mysql --skip-column-names -h $db_host -u $db_user -p$db_password information_schema -e "SELECT 1 FROM TABLES WHERE TABLE_SCHEMA = '$database' AND TABLE_NAME = '${db_prefix}app_documents'"`
 if [ "$app_documents" = "1" ]; then
 	# Extrayendo las formas de pago de la base de datos
-	mysql --skip-column-names -h $db_host -u $db_user -p$db_password $database -e "SELECT document_name FROM app_documents" >> required.txt
+	mysql --skip-column-names -h $db_host -u $db_user -p$db_password $database -e "SELECT document_name FROM ${db_prefix}app_documents" >> required.txt
 fi
 
 # Ordenando las palabras en el archivo required, y eliminando las repetidas

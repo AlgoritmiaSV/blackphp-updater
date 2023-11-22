@@ -25,6 +25,7 @@ db_host=`jq -r ".db_host" $1`
 db_user=`jq -r ".db_user" $1`
 db_password=`jq -r ".db_password" $1`
 database=`jq -r ".database" $1`
+db_prefix=`jq -r ".db_prefix" $1`
 project_folder=`basename $project_path`
 temp_dir=$temp_path/orm/$project_folder
 
@@ -64,7 +65,7 @@ model_name=""
 for table_data in $tables; do
 	if [ $table_position -eq 0 ]; then
 		table_name=$table_data
-		model_name=`echo $table_data | sed -r 's/(_)(\w)/\U\2/g'`
+		model_name=`echo $table_data | sed -r 's/^'$db_prefix'(.*)/\1/g' | sed -r 's/(_)(\w)/\U\2/g'`
 		((table_position=table_position+1))
 		continue
 	else
@@ -275,7 +276,7 @@ for table_data in $tables; do
 	referenced_column_name=""
 	for key_data in $keys; do
 		if [ $column_position -eq 0 ]; then
-			rtable_model=`echo $key_data | sed -r 's/(_)(\w)/\U\2/g'`
+			rtable_model=`echo $key_data | sed -r 's/^'$db_prefix'(.*)/\1/g' | sed -r 's/(_)(\w)/\U\2/g'`
 			((column_position=column_position+1))
 			continue
 		fi

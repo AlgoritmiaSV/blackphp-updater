@@ -30,6 +30,7 @@ db_host=`jq -r ".db_host" $1`
 db_user=`jq -r ".db_user" $1`
 db_password=`jq -r ".db_password" $1`
 database=`jq -r ".database" $1`
+db_prefix=`jq -r ".db_prefix" $1`
 project_folder=`basename $project_path`
 
 # Se guardan todos los volcados en una carpeta temporal, para luego comparar si hubieron cambios. Esto, para evitar que la sincronización en la nuble se repita si solo cambia la fecha de actualización.
@@ -56,7 +57,8 @@ cd $destiny_path
 mysqldump -h $db_host -u $db_user -p$db_password -d --skip-dump-date $database | sed 's/ AUTO_INCREMENT=[0-9]*//g' | sed -e 's/DEFINER[ ]*=[ ]*[^*]*\*/\*/' | sed -E "s/(SET sql_mode\s+= ')(.*)(')/\1\3/" | sed "s/\`$database\`\.//g" | sed -E 's/utf8([a-z0-9_]+)_ci/utf8mb4_general_ci/g' > $temp_dir/db_structure.sql
 
 # Volcado de los valores de todas las tablas que inician con app_*
-mysqldump -h $db_host -u $db_user -p$db_password -t --skip-dump-date --skip-triggers $database $(mysql -h $db_host -u $db_user -p$db_password -D $database -Bse "SHOW TABLES LIKE 'app\_%'") > $temp_dir/initial_data.sql
+db_prefix=`echo $db_prefix | sed 's/_/\\\\_/g'`
+mysqldump -h $db_host -u $db_user -p$db_password -t --skip-dump-date --skip-triggers $database $(mysql -h $db_host -u $db_user -p$db_password -D $database -Bse "SHOW TABLES LIKE '"$db_prefix"app\_%'") > $temp_dir/initial_data.sql
 
 # Se comprueba que exista un archivo previo de la estructura, y que es diferente. Si el archivo no existe, se crea.
 result=`rsync -c --info=NAME1 "$temp_dir/db_structure.sql" ./db_structure.sql`
