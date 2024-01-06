@@ -8,6 +8,7 @@ Conjunto de scipts en Shell Script que permiten tener actualizados los proyectos
 
 Requisitos
 ----------
+
 1) El proyecto BlackPHP, disponible en.
 2) rsync
 3) jq
@@ -16,6 +17,7 @@ Requisitos
 
 El equipo desarrollador
 -----------------------
+
 _En El Salvador:_  
 > Ing. Edwin Ernesto Fajardo Valenzuela  
 

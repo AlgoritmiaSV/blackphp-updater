@@ -16,7 +16,6 @@ titles[negkitProjects]="NegKit Projects"
 titles[negkitServices]="NegKit Services"
 titles[sicoimWebApp]=SICOIM
 titles[mimakit]=MimaKit
-titles[fileManager]="File Manager"
 titles[inabve]="INABVE"
 
 # Si no se le ha pasado ningún parámetro, entonces se ejecuta con todos los proyectos definidos en los arreglos.
