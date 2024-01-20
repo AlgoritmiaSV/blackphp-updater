@@ -39,7 +39,7 @@ if $modified; then
 	for i in ${scripts[@]}; do
 		cat $i.js >> $temp_file
 	done
-	echo "/*BlackPHP (c)2022 - 2023 Edwin Fajardo.*/" > $dir/bpscript.min.js
+	echo "/*BlackPHP (c)2022 - 2024 Edwin Fajardo.*/" > $dir/bpscript.min.js
 	wget -q --post-data="input=`php -r \"echo urlencode(file_get_contents(\\\"$temp_file\\\"));\"`" -O - https://www.toptal.com/developers/javascript-minifier/api/raw >> $dir/bpscript.min.js
 	echo ";" >> $dir/bpscript.min.js
 fi
