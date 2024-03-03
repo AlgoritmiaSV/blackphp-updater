@@ -9,7 +9,7 @@ Conjunto de scipts en Shell Script que permiten tener actualizados los proyectos
 Requisitos
 ----------
 
-1) El proyecto BlackPHP, disponible en.
+1) El proyecto BlackPHP, disponible en [GitHub](https://github.com/AlgoritmiaSV/BlackPHP).
 2) rsync
 3) jq
 4) Cada uno de los proyectos a actualizar, debidamente configurados, con sus bases de datos (Excepto al crear un nuevo proyecto).
@@ -22,7 +22,7 @@ _En El Salvador:_
 > Ing. Edwin Ernesto Fajardo Valenzuela  
 
 Para mayor información, visite:  
-[Red Teleinformática](https://www.redteleinformatica.com)
+[Algoritmia SV](https://www.algoritmia.sv)
 
 Edwin Fajardo  
 [www.edwinfajardo.com](https://www.edwinfajardo.com)
