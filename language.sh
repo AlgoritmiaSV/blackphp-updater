@@ -66,10 +66,9 @@ grep -nrw "$project_path/controllers/" -Ee '_\([^\)]+\)'  | sed -E 's/\)/\)\n/g'
 # Extrayendo palabras y frases de las talas del sistema
 # -> Nombre de los módulos
 # -> Nombre de los métodos
-# -> Descripción de los métodos
 # -> Nombre de los temas
 # -> Nombre singular y plural de los elementos
-mysql --skip-column-names -h $db_host -u $db_user -p$db_password $database -e "SELECT module_name FROM ${db_prefix}app_modules WHERE status = 1 UNION ALL SELECT method_name FROM ${db_prefix}app_methods WHERE status = 1 UNION ALL SELECT theme_name FROM ${db_prefix}app_themes UNION ALL SELECT method_description FROM ${db_prefix}app_methods WHERE status = 1 UNION ALL SELECT element_name FROM ${db_prefix}app_elements UNION ALL SELECT singular_name FROM ${db_prefix}app_elements UNION ALL SELECT locale_name FROM ${db_prefix}app_locales UNION ALL SELECT option_description FROM ${db_prefix}app_options" >> required.txt
+mysql --skip-column-names -h $db_host -u $db_user -p$db_password $database -e "SELECT module_name FROM ${db_prefix}app_modules WHERE status = 1 UNION ALL SELECT method_name FROM ${db_prefix}app_methods WHERE status = 1 UNION ALL SELECT theme_name FROM ${db_prefix}app_themes UNION ALL SELECT element_name FROM ${db_prefix}app_elements UNION ALL SELECT singular_name FROM ${db_prefix}app_elements UNION ALL SELECT locale_name FROM ${db_prefix}app_locales UNION ALL SELECT option_description FROM ${db_prefix}app_options" >> required.txt
 
 # Evaluando si existe la tabla app_payments
 app_payments=`mysql --skip-column-names -h $db_host -u $db_user -p$db_password information_schema -e "SELECT 1 FROM TABLES WHERE TABLE_SCHEMA = '$database' AND TABLE_NAME = '${db_prefix}app_payments'"`
