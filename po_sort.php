@@ -140,9 +140,9 @@
 	{
 		$headers = Array(
 			'# PACK OF ' . $lang_name[$locale] . ' LANGUAGE FOR ' . strtoupper($project["project_name"]),
-			'# Copyright (C)2022-' . Date("Y") . ' Red Teleinformática',
+			'# Copyright (C)2022-' . Date("Y") . ' Algoritmia SV',
 			'# This file is distributed under the same license as the PACKAGE ' . $project["project_name"] . '.',
-			'# Edwin Fajardo <contacto@edwinfajardo.com>, 2022.',
+			'# Edwin Fajardo <contacto@edwinfajardo.com>.',
 			'#',
 			'#, fuzzy',
 			'msgid ""',
