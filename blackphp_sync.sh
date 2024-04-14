@@ -66,13 +66,13 @@ if [ "$existing_files" = "0" ]; then
 	files=`echo $files | sed -e 's/,//'`
 else
 	# Comprueba la cantidad de archivos a transferir
-	files=`rsync -rcn --stats --exclude ".git/" --exclude ".vscode" --exclude "db/" --include "controllers/error.php" --include "controllers/Resources.php" --exclude "controllers/*" --exclude "public/icons" --exclude "public/images" --exclude "favicon.ico" --exclude "models/" --exclude "README.md" --exclude "views/*" --exclude ".gitignore" --exclude "entities/" --exclude "locale/" --exclude "app_info.json" --exclude "/config.php" --exclude "public/manifest.json" $blackphp_path/ $project_path/ | grep "files transferred" | cut -c 38-`
+	files=`rsync -rcn --stats --exclude ".git/" --exclude ".vscode" --exclude "db/" --include "controllers/error.php" --include "controllers/Resources.php" --exclude "controllers/*" --exclude "public/icons" --exclude "public/images" --exclude "favicon.ico" --exclude "models/" --exclude "README.md" --exclude "views/*" --exclude ".gitignore" --exclude "entities/" --exclude "locale/" --exclude "app_info.json" --exclude "/config.php" --exclude "public/manifest.json" --exclude "/node_modules" --exclude "/vendor" $blackphp_path/ $project_path/ | grep "files transferred" | cut -c 38-`
 	# Si la cantidad de archivos a transferir es mayor que cero, realiza la sincronización, de lo contrario, imprime "Up to date".
 	files=`echo $files | sed -e 's/,//'`
 	if [ $files -gt "0" ]; then
-		rsync -rc --exclude ".git/" --exclude ".vscode" --exclude "db/" --include "controllers/error.php" --include "controllers/Resources.php" --exclude "controllers/*" --exclude "public/icons" --exclude "public/images" --exclude "favicon.ico" --exclude "models/" --exclude "README.md" --exclude "views/*" --exclude ".gitignore" --exclude "entities/" --exclude "locale/" --exclude "app_info.json" --exclude "/config.php" --exclude "manifest.json" --exclude "/node_modules" --exclude "/vendor" --info=NAME1 $blackphp_path/ $project_path/
-		rsync -a --delete --info=NAME1 $blackphp_path/node_modules/ $project_path/node_modules/
-		rsync -a --delete --info=NAME1 $blackphp_path/vendor/ $project_path/vendor/
+		rsync -rc --exclude ".git/" --exclude ".vscode" --exclude "db/" --include "controllers/error.php" --include "controllers/Resources.php" --exclude "controllers/*" --exclude "public/icons" --exclude "public/images" --exclude "favicon.ico" --exclude "models/" --exclude "README.md" --exclude "views/*" --exclude ".gitignore" --exclude "entities/" --exclude "locale/" --exclude "app_info.json" --exclude "/config.php" --exclude "public/manifest.json" --exclude "/node_modules" --exclude "/vendor" --info=NAME1 $blackphp_path/ $project_path/
+		# rsync -a --delete --info=NAME1 $blackphp_path/node_modules/ $project_path/node_modules/
+		# rsync -a --delete --info=NAME1 $blackphp_path/vendor/ $project_path/vendor/
 	fi
 fi
 # Si al final de la operación sí hubo transferencia de archivos, ya sea a un proyecto existente o uno nuevo, entonces se agrega el archivo black_php.json en el destino, con información acerca de la fecha y hora de la última actualización.
