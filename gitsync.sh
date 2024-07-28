@@ -22,7 +22,7 @@ fi
 project_name=`jq -r ".project_name" $1`
 project_path=`jq -r ".project_path" $1`
 project_folder=`basename $project_path`
-git_path=/store/Gits/$project_folder
+git_path=/store/Gits/mvc/$project_folder
 
 echo "------------ Update git local in $project_name"
 cd $git_path
