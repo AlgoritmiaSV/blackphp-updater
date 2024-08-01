@@ -133,7 +133,8 @@
 	$lang_name = Array(
 		"en_US" => "ENGLISH",
 		"es_ES" => "SPANISH",
-		"it_IT" => "ITALIAN"
+		"it_IT" => "ITALIAN",
+		"ru_RU" => "RUSSIAN"
 	);
 	$file_content = '';
 	if($not_required > 0 || $not_translated > 0)
