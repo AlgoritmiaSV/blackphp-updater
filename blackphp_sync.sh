@@ -36,7 +36,7 @@ cd $blackphp_path/
 
 # Establecemos fecha de actualización
 last_update=`jq -r ".last_update" app_info.json`
-modified=`find . -type f -newermt "$last_update" ! -name "app_info.json" ! -path "./node_modules/*" ! -path "./composer/*" ! -path "./.git/*" ! -path "./.vscode/*" | wc -l`
+modified=`find . -type f -newermt "$last_update" ! -name "app_info.json" ! -path "./node_modules/*" ! -path "./vendor/*" ! -path "./.git/*" ! -path "./.vscode/*" | wc -l`
 if [ $modified -gt "0" ]; then
 	last_update=`date +"%Y-%m-%d %H:%M:%S"`
 	number=`jq -r ".number" app_info.json`
