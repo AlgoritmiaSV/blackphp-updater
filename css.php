@@ -1,5 +1,5 @@
 <?php
-	$file = "/store/Clouds/Mega/www/blackphp/public/styles/main.css";
+	$file = "/store/Clouds/Mega/development/mvc/blackphp/public/styles/main.css";
 	$content = file_get_contents($file);
 	$data = Array();
 	$content = explode("\n", $content);

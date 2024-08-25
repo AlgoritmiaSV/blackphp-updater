@@ -33,7 +33,7 @@ if [ -v titles[$1] ]; then
 	if [ ! -d /store/bphp/documentation/$1/ ]; then
 		mkdir -p /store/bphp/documentation/$1/
 	fi
-	phpdoc -d /store/Clouds/Mega/www/$1/ -t /store/bphp/documentation/$1/ -i vendor/ -i plugins/ --title "${titles[$1]}" --setting="guides.enabled=true"
+	phpdoc -d /store/Clouds/Mega/development/mvc/$1/ -t /store/bphp/documentation/$1/ -i vendor/ -i plugins/ --title "${titles[$1]}" --setting="guides.enabled=true"
 else
 	echo "Error: $1 NOT EXISTS"
 fi
