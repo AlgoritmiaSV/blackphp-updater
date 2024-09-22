@@ -15,7 +15,7 @@ cd $config_files
 
 # Se comprueba que se haya pasado por parámetro el nombre de la carpeta con la cual se quiere sincronizar, de lo contrario, sincronizará con una lista definida.
 if [ "$#" = "0" ]; then
-	for config_file in `ls -I _PROJECT_EXAMPLE.json`
+	for config_file in `ls -I "_*"`
 	do
 		$0 "$config_files/$config_file"
 	done

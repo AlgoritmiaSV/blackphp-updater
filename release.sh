@@ -22,7 +22,7 @@ cd $config_files
 
 # Si se ejecuta sin parámetros, se hace un volcado de todas las bases de datos definidas en el arreglo; sino, se realiza sólo de las que han sido especificadas.
 if [ "$#" = "0" ]; then
-	for config_file in `ls -I _PROJECT_EXAMPLE.json`
+	for config_file in `ls -I "_*"`
 	do
 		$0 "$config_files/$config_file"
 	done
