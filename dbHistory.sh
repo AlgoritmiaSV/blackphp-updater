@@ -44,4 +44,4 @@ fi
 cd $destiny_dir
 
 # Syncronización
-rsync -rv --delete $project_path/db/ $destiny_dir
+rsync -rcv --delete $project_path/db/ $destiny_dir
