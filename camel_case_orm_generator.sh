@@ -160,9 +160,9 @@ for table_data in $tables; do
 	echo -e "\t/** @var bool \$_timestamps La tabla usa marcas de tiempo para la inserción y edición de datos */" >> $file
 	echo -e "\tprivate static \$_timestamps = $timestamps;" >> $file
 
-	# Determina si la tabla soporta borrado suave (Se necesita un campo de estado $status)
+	# Determina si la tabla soporta borrado lógico (Se necesita un campo de estado $status)
 	echo "" >> $file
-	echo -e "\t/** @var bool \$_soft_delete La tabla soporta borrado suave */" >> $file
+	echo -e "\t/** @var bool \$_soft_delete La tabla soporta borrado lógico */" >> $file
 	echo -e "\tprivate static \$_soft_delete = $soft_delete;" >> $file
 
 	# Determina si hay un campo status, y si este puede tomar un valor nulo
@@ -173,22 +173,24 @@ for table_data in $tables; do
 		deleted_status="0"
 	fi
 	echo "" >> $file
-	echo -e "\t/** @var int|null \$_deleted_status Valor a asignar en caso de borrado suave. */" >> $file
+	echo -e "\t/** @var int|null \$_deleted_status Valor a asignar en caso de borrado lógico. */" >> $file
 	echo -e "\tprivate static \$_deleted_status = $deleted_status;" >> $file
 	echo "" >> $file
 
 	# Constructor de la clase
-	echo -e "\t/**" >> $file
-	echo -e "\t * Constructor de la clase" >> $file
-	echo -e "\t * " >> $file
-	echo -e "\t * Se inicializan las propiedades de la clase." >> $file
-	echo -e "\t * @param bool \$default Determina si se utilizan, o no, los valores por defecto" >> $file
-	echo -e "\t * definidos en la base de datos." >> $file
-	echo -e "\t **/" >> $file
-	echo -e "\tpublic function __construct(\$default = true)" >> $file
-	echo -e "\t{" >> $file
-	echo -e "\t\tif(\$default)" >> $file
-	echo -e "\t\t{" >> $file
+	cat <<EOF >> "$file"
+	/**
+	 * Constructor de la clase
+	 * 
+	 * Se inicializan las propiedades de la clase.
+	 * @param bool \$default Determina si se utilizan, o no, los valores por defecto
+	 * definidos en la base de datos.
+	 **/
+	public function __construct(\$default = true)
+	{
+		if(\$default)
+		{
+EOF
 	for column_data in $columns; do
 		if [ $column_position -eq 0 ]; then
 			column_name=$column_data

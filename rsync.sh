@@ -7,9 +7,19 @@ upload()
 		ssh -p $5 $6@$4 "cat $3/error_log"
 	fi
 	if [ "$1" = "true" ]; then
-		rsync -crv -e "ssh -p $5" --delete --exclude 'config.php' --exclude 'entities/' --exclude 'db/' $2 $6@$4:$3
+		rsync -crv -e "ssh -p $5" --delete \
+			--exclude 'config.php' \
+			--exclude 'entities/' \
+			--exclude 'db/' \
+			$2 $6@$4:$3
 	else
-		rsync -crv -e "ssh -p $5" --delete --exclude 'config.php' --exclude 'entities/' --exclude 'db/' --exclude 'node_modules/' --exclude 'vendor/' $2 $6@$4:$3
+		rsync -crv -e "ssh -p $5" --delete \
+			--exclude 'config.php' \
+			--exclude 'entities/' \
+			--exclude 'db/' \
+			--exclude 'node_modules/' \
+			--exclude 'vendor/' \
+			$2 $6@$4:$3
 	fi
 	echo Completed Succefully!
 	echo -n Synced at:

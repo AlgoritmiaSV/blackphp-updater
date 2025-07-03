@@ -66,7 +66,33 @@ if [ $modified -gt "0" ]; then
 fi
 # Sincronización de archivos no sujetos a minificación, como las imágenes, fuentes, y archivos que previamente hayan sido minificados
 echo "    Syncing..."
-rsync -cr --delete --chown=fajardo:fajardo --chmod=D755,F644 --exclude ".git" --exclude ".gitignore" --exclude "companies/" --exclude "entities/" --exclude "db/historical/" --exclude "/docs/" --exclude "node_modules/" --exclude ".vscode" --include "default_config.php" --exclude "*.php" --include "public/scripts/*.min.js" --include "public/scripts/serviceWorker.js" --include "public/scripts/tables.js" --include "public/scripts/*/*.js" --exclude "public/scripts/*.js" --exclude "*.html" --include "*.min.css" --exclude "*.css" --exclude "CHANGELOG.*" --exclude "changelog.*" --exclude "*.scss" --exclude "bower.json" --exclude "composer.json" --exclude "composer.lock" --exclude "package.json" --exclude "package-lock.json" --exclude "messages.po" --info=NAME1 $project_path/ $production/
+rsync -cr --delete --chown=fajardo:fajardo --chmod=D755,F644 \
+	--exclude ".git" \
+	--exclude ".gitignore" \
+	--exclude "entities/" \
+	--exclude "db/historical/" \
+	--exclude "node_modules/" \
+	--exclude ".vscode" \
+	--include "default_config.php" \
+	--exclude "*.php" \
+	--include "public/scripts/*.min.js" \
+	--include "public/scripts/serviceWorker.js" \
+	--include "public/scripts/tables.js" \
+	--include "public/scripts/file_downloader.js" \
+	--include "public/scripts/*/*.js" \
+	--exclude "public/scripts/*.js" \
+	--exclude "*.html" \
+	--include "*.min.css" \
+	--exclude "*.css" \
+	--exclude "CHANGELOG.*" \
+	--exclude "changelog.*" \
+	--exclude "*.scss" \
+	--exclude "composer.json" \
+	--exclude "composer.lock" \
+	--exclude "package.json" \
+	--exclude "package-lock.json" \
+	--exclude "messages.po" \
+	--info=NAME1 $project_path/ $production/
 
 # Minificación y copia de archivos PHP
 echo "    Minifying PHP..."
