@@ -17,11 +17,14 @@ temp_folder=$temp_path/js
 if [ ! -d $temp_folder ]; then
 	mkdir -p $temp_folder
 fi
-temp_file=$temp_folder/bpscript.js
+temp_file1=$temp_folder/bpscript1.js
+temp_file2=$temp_folder/bpscript2.js
 cd $dir
 
 # Verificar cuáles de los scipt son más nuevos que el último bpscript.min.js generado.
 scripts=(main lists forms invoicing dialogs order tree charts persistent_forms)
+group1=(main lists forms invoicing)
+group2=(dialogs tree charts persistent_forms)
 modified=false
 echo "------------ Minify JS"
 # Imprime la fecha y hora de última generación de bpscript.min.js
@@ -35,11 +38,21 @@ done
 # Si hay al menos un archivo nuevo, entonces se hace de nuevo el proceso de minificación; de lo contrario, imprime "All up to date"
 if $modified; then
 	echo "Minifying..."
-	echo "/* BPHPSCRIPT */" > $temp_file
-	for i in ${scripts[@]}; do
-		cat $i.js >> $temp_file
+	echo "/* BPHPSCRIPT */" > $temp_file1
+	for i in ${group1[@]}; do
+		cat $i.js >> $temp_file1
+	done
+	echo "/* BPHPSCRIPT */" > $temp_file2
+	for j in ${group2[@]}; do
+		cat $j.js >> $temp_file2
 	done
 	echo "/*BlackPHP (c)2022 - 2024 Edwin Fajardo.*/" > $dir/bpscript.min.js
-	wget -q --post-data="input=`php -r \"echo urlencode(file_get_contents(\\\"$temp_file\\\"));\"`" -O - https://www.toptal.com/developers/javascript-minifier/api/raw >> $dir/bpscript.min.js
-	echo ";" >> $dir/bpscript.min.js
+
+	data=`php -r "echo urlencode(file_get_contents(\"$temp_file1\"));"`
+	wget -q --post-data="input=$data" -O - https://www.toptal.com/developers/javascript-minifier/api/raw >> $dir/bpscript.min.js
+
+	data=`php -r "echo urlencode(file_get_contents(\"$temp_file2\"));"`
+	wget -q --post-data="input=$data" -O - https://www.toptal.com/developers/javascript-minifier/api/raw >> $dir/bpscript.min.js
+
+	# echo ";" >> $dir/bpscript.min.js
 fi
