@@ -82,6 +82,7 @@ rsync -cr --delete --chown=fajardo:fajardo --chmod=D755,F644 \
 	--include "public/scripts/menu.js" \
 	--include "public/scripts/required_asterisk.js" \
 	--include "public/scripts/tabs.js" \
+	--include "public/scripts/receipts.js" \
 	--include "public/scripts/*/*.js" \
 	--exclude "public/scripts/*.js" \
 	--exclude "*.html" \
