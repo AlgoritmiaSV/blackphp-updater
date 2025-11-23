@@ -24,18 +24,30 @@ cd $config_files
 if [ "$#" = "0" ]; then
 	for config_file in `ls -I "_*"`
 	do
-		$0 "$config_files/$config_file"
+		$0 "$config_file"
+	done
+	exit 1
+fi
+if [ "$#" -gt "1" ]; then
+	for config_file in "$@"
+	do
+		$0 "$config_file"
 	done
 	exit 1
 fi
 
-if [ ! -f "$1" ]; then
-	echo "File $1 not exists!"
+config_file=$1
+if [[ "$config_file" != *.json ]]; then
+	config_file="${config_file}.json"
+fi
+
+if [ ! -f "$config_file" ]; then
+	echo "File $config_file not exists!"
 	exit 1
 fi
-project_name=`jq -r ".project_name" $1`
-project_path=`jq -r ".project_path" $1`
-database=`jq -r ".database" $1`
+project_name=`jq -r ".project_name" $config_file`
+project_path=`jq -r ".project_path" $config_file`
+database=`jq -r ".database" $config_file`
 project_folder=`basename $project_path`
 temp_dir=$temp_path/locale/$project_folder
 echo "------------ Releasing $project_name"
