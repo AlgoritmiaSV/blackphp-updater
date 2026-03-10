@@ -23,8 +23,8 @@ cd $dir
 
 # Verificar cuáles de los scipt son más nuevos que el último bpscript.min.js generado.
 scripts=(main lists forms invoicing dialogs order tree charts persistent_forms)
-group1=(main lists forms invoicing)
-group2=(dialogs tree charts persistent_forms)
+group1=(main lists forms)
+group2=(dialogs tree charts persistent_forms invoicing)
 modified=false
 echo "------------ Minify JS"
 # Imprime la fecha y hora de última generación de bpscript.min.js
