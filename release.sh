@@ -89,13 +89,13 @@ rsync -cr --delete --chown=fajardo:fajardo --chmod=D755,F644 \
 	--exclude "*.php" \
 	--include "public/scripts/*.min.js" \
 	--include "public/scripts/serviceWorker.js" \
-	--include "public/scripts/tables.js" \
+	--include "public/scripts/table_sorting.js" \
 	--include "public/scripts/file_downloader.js" \
 	--include "public/scripts/menu.js" \
 	--include "public/scripts/required_asterisk.js" \
 	--include "public/scripts/tabs.js" \
 	--include "public/scripts/receipts.js" \
-	--include "public/scripts/passwords.js" \
+#	--include "public/scripts/passwords.js" \
 	--include "public/scripts/maps_antennas.js" \
 	--include "public/scripts/maps_billboards.js" \
 	--include "public/scripts/*/*.js" \

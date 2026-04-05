@@ -22,9 +22,9 @@ temp_file2=$temp_folder/bpscript2.js
 cd $dir
 
 # Verificar cuáles de los scipt son más nuevos que el último bpscript.min.js generado.
-scripts=(main lists forms invoicing dialogs order tree charts persistent_forms)
-group1=(main lists forms)
-group2=(dialogs tree charts persistent_forms invoicing)
+scripts=(main lists forms table_calculation dialogs order tree charts persistent_forms)
+group1=(main lists forms passwords required_asterisk)
+group2=(dialogs tree charts persistent_forms table_calculation)
 modified=false
 echo "------------ Minify JS"
 # Imprime la fecha y hora de última generación de bpscript.min.js
@@ -46,7 +46,7 @@ if $modified; then
 	for j in ${group2[@]}; do
 		cat $j.js >> $temp_file2
 	done
-	echo "/*BlackPHP (c)2022 - 2024 Edwin Fajardo.*/" > $dir/bpscript.min.js
+	echo "/*BlackPHP (c)2022 - 2026 Edwin Fajardo.*/" > $dir/bpscript.min.js
 
 	data=`php -r "echo urlencode(file_get_contents(\"$temp_file1\"));"`
 	wget -q --post-data="input=$data" -O - https://www.toptal.com/developers/javascript-minifier/api/raw >> $dir/bpscript.min.js
