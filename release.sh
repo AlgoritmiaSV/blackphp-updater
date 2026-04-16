@@ -105,10 +105,6 @@ rsync -cr --delete --chown=fajardo:fajardo --chmod=D755,F644 \
 	--exclude "CHANGELOG.*" \
 	--exclude "changelog.*" \
 	--exclude "*.scss" \
-	--exclude "composer.json" \
-	--exclude "composer.lock" \
-	--exclude "package.json" \
-	--exclude "package-lock.json" \
 	--exclude "messages.po" \
 	--info=NAME1 $project_path/ $production/
 
