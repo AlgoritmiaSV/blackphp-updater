@@ -22,8 +22,8 @@ temp_file2=$temp_folder/bpscript2.js
 cd $dir
 
 # Verificar cuáles de los scipt son más nuevos que el último bpscript.min.js generado.
-scripts=(main lists forms table_calculation dialogs order tree charts persistent_forms)
-group1=(main lists forms passwords required_asterisk)
+scripts=(main lists forms change_status table_calculation dialogs order tree charts persistent_forms)
+group1=(change_status main lists forms passwords required_asterisk)
 group2=(dialogs tree charts persistent_forms table_calculation)
 modified=false
 echo "------------ Minify JS"

@@ -48,6 +48,7 @@ types[float]=float
 types[decimal]=float
 types[double]=float
 types[bigint]=int
+types[binary]=string
 
 echo "------------ ORM for project $project_folder"
 if [ ! -d "$temp_dir" ]; then

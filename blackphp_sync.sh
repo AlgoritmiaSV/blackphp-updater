@@ -60,15 +60,26 @@ if [ "$existing_files" = "0" ]; then
 	# Instalación nueva. Crea un directorio
 	mkdir -p $project_path
 	# Cuenta los archivos a transferir con rsync --stats (el parámetro n es esencial para no ejecutar de una vez)
-	files=`rsync -avn --stats --exclude ".git/" --exclude ".vscode" --exclude "db/" --exclude "entities/" $blackphp_path/ $project_path/ | grep "files transferred" | cut -c 38-`
+	files=`rsync -avn --stats \
+		--exclude ".git/" \
+		--exclude ".vscode" \
+		--exclude "db/" \
+		--exclude "entities/" \
+		$blackphp_path/ $project_path/ | grep "files transferred" | cut -c 38-`
 	#Realiza la sincronización
-	rsync -av --exclude ".git/" --exclude ".vscode" --exclude "db/" --exclude "entities/" $blackphp_path/ $project_path/
+	rsync -av \
+		--exclude ".git/" \
+		--exclude ".vscode" \
+		--exclude "db/" \
+		--exclude "entities/" \
+		$blackphp_path/ $project_path/
 	files=`echo $files | sed -e 's/,//'`
 else
 	# Comprueba la cantidad de archivos a transferir
 	files=`rsync -rcn --stats \
 		--exclude ".git/" \
 		--exclude ".vscode" \
+		--exclude ".htaccess" \
 		--exclude "db/" \
 		--include "controllers/error.php" \
 		--include "controllers/Resources.php" \
@@ -98,6 +109,7 @@ else
 		rsync -rc \
 			--exclude ".git/" \
 			--exclude ".vscode" \
+			--exclude ".htaccess" \
 			--exclude "db/" \
 			--include "controllers/error.php" \
 			--include "controllers/Resources.php" \

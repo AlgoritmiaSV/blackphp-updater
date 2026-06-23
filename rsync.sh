@@ -35,7 +35,7 @@ usage()
 	while IFS=$"\n" read -r c; do
 		sync_name=$(echo "$c" | jq -r '.sync_name')
 		description=$(echo "$c" | jq -r '.description')
-		printf "%14s: %s\n" "$sync_name" "$description"
+		printf "%24s: %s\n" "$sync_name" "$description"
 	done
 	echo "            -n: Ommit vendor and node_modules"
 }
