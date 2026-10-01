@@ -189,8 +189,7 @@ for table_data in $tables; do
 	 **/
 	public function __construct(\$default = true)
 	{
-		if(\$default)
-		{
+		if (\$default) {
 EOF
 	for column_data in $columns; do
 		if [ $column_position -eq 0 ]; then
@@ -264,7 +263,7 @@ EOF
 			if [ ! "$text_length" = "NULL" ]; then
 				echo -e "\t\tself::validateStringSize(\$value, $text_length);" >> $file
 			fi
-			echo -e "\t\t\$this->$column_name = \$value === null ? null : (${types[$column_type]})\$value;" >> $file
+			echo -e "\t\t\$this->$column_name = \$value === null ? null : (${types[$column_type]}) \$value;" >> $file
 			echo -e "\t}" >> $file
 			column_position=0
 		fi
@@ -307,7 +306,6 @@ EOF
 
 	#Fin
 	echo "}" >> $file
-	echo "?>" >> $file
 done
 echo ""
 
