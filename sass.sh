@@ -15,7 +15,7 @@ temp_path=`jq -r ".temp_path" $script_dir/config.json`
 dir=$blackphp_path/public
 temp_folder=$temp_path/css
 if [ ! -d $temp_folder ]; then
-	mkdir -p $temp_folder
+    mkdir -p $temp_folder
 fi
 
 cd $dir/styles
@@ -28,10 +28,10 @@ themes[green]="themes/green/styles"
 themes[blue_top]="themes/blue_top/styles"
 themes[white]="themes/white/styles"
 for theme in "${!themes[@]}"; do
-	theme_folder=$temp_folder/${themes[$theme]}
-	if [ ! -d $theme_folder ]; then
-		mkdir -p $theme_folder
-	fi
-	sass -q --no-source-map --style=compressed theme_$theme.scss $theme_folder/theme.min.css
+    theme_folder=$temp_folder/${themes[$theme]}
+    if [ ! -d $theme_folder ]; then
+        mkdir -p $theme_folder
+    fi
+    sass -q --no-source-map --style=compressed theme_$theme.scss $theme_folder/theme.min.css
 done
 rsync -rc --info=NAME1 $temp_folder/ $dir/

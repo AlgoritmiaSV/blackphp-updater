@@ -6,10 +6,10 @@
 # REQUERIMIENTOS
 # gettext
 if [[ $EUID -ne 0 ]]; then
-	echo "This script must be run as root"
-	command="${0} ${@}"
-	su -c "$command"
-	exit 1
+    echo "This script must be run as root"
+    command="${0} ${@}"
+    su -c "$command"
+    exit 1
 fi
 
 #Cargando configuración inicial
@@ -21,16 +21,16 @@ cd $config_files
 
 # Si se ejecuta sin parámetros, se hace un volcado de todas las bases de datos definidas en el arreglo; sino, se realiza sólo de las que han sido especificadas.
 if [ "$#" = "0" ]; then
-	for config_file in `ls -I "_*"`
-	do
-		$script_path "$config_files/$config_file"
-	done
-	exit 1
+    for config_file in `ls -I "_*"`
+    do
+        $script_path "$config_files/$config_file"
+    done
+    exit 1
 fi
 
 if [ ! -f "$1" ]; then
-	echo "File $1 not exists!"
-	exit 1
+    echo "File $1 not exists!"
+    exit 1
 fi
 project_name=`jq -r ".project_name" $1`
 project_path=`jq -r ".project_path" $1`
@@ -39,7 +39,7 @@ destiny_dir=/store/Gits/others/db-history/$project_folder
 
 # Directorio destino
 if [ ! -d "$destiny_dir" ]; then
-	mkdir -p "$destiny_dir"
+    mkdir -p "$destiny_dir"
 fi
 cd $destiny_dir
 

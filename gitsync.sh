@@ -8,16 +8,16 @@ cd $config_files
 
 # Si se ejecuta sin parámetros, se hace un volcado de todas las bases de datos definidas en el arreglo; sino, se realiza sólo de las que han sido especificadas.
 if [ "$#" = "0" ]; then
-	for config_file in `ls -I "_*"`
-	do
-		$0 "$config_files/$config_file"
-	done
-	exit 1
+    for config_file in `ls -I "_*"`
+    do
+        $0 "$config_files/$config_file"
+    done
+    exit 1
 fi
 
 if [ ! -f "$1" ]; then
-	echo "File $1 not exists!"
-	exit 1
+    echo "File $1 not exists!"
+    exit 1
 fi
 project_name=`jq -r ".project_name" $1`
 project_path=`jq -r ".project_path" $1`

@@ -13,16 +13,16 @@ cd $config_files
 
 # Si se ejecuta sin parámetros, se hace un volcado de todas las bases de datos definidas en el arreglo; sino, se realiza sólo de las que han sido especificadas.
 if [ "$#" = "0" ]; then
-	for config_file in `ls -I "_*"`
-	do
-		$0 "$config_files/$config_file"
-	done
-	exit 1
+    for config_file in `ls -I "_*"`
+    do
+        $0 "$config_files/$config_file"
+    done
+    exit 1
 fi
 
 if [ ! -f "$1" ]; then
-	echo "File $1 not exists!"
-	exit 1
+    echo "File $1 not exists!"
+    exit 1
 fi
 project_name=`jq -r ".project_name" $1`
 project_path=`jq -r ".project_path" $1`
@@ -38,7 +38,7 @@ temp_dir=$temp_path/mysqldump/$project_folder
 
 # Comprueba si existe en el arreglo; sino, devolverá un error.
 if [ ! -d "$temp_dir" ]; then
-	mkdir -p $temp_dir
+    mkdir -p $temp_dir
 fi
 
 echo "------------ MYSQLDUMP > $database to $project_folder"
@@ -46,7 +46,7 @@ echo "------------ MYSQLDUMP > $database to $project_folder"
 # Navegamos hacia la carpeta db dentro del proyecto seleccionado
 destiny_path=$project_path/db/mysql/
 if [ ! -d "$destiny_path" ]; then
-	mkdir -p $destiny_path
+    mkdir -p $destiny_path
 fi
 cd $destiny_path
 # Volcado de la estructura
@@ -63,8 +63,8 @@ mysqldump -h $db_host -u $db_user -p$db_password -t --skip-dump-date --skip-trig
 # Se comprueba que exista un archivo previo de la estructura, y que es diferente. Si el archivo no existe, se crea.
 result=`rsync -c --info=NAME1 "$temp_dir/db_structure.sql" ./db_structure.sql`
 if [ "$result" != "" ]; then
-	echo $result
-	$script_dir/camel_case_orm_generator.sh "$1"
+    echo $result
+    $script_dir/camel_case_orm_generator.sh "$1"
 fi
 # Se comprueba que exista un archivo previo de los datos iniciales, y que es diferente. Si el archivo no existe, se crea.
 rsync -c --info=NAME1 "$temp_dir/initial_data.sql" ./initial_data.sql

@@ -15,16 +15,16 @@ cd $config_files
 
 # Si se ejecuta sin parámetros, se hace un volcado de todas las bases de datos definidas en el arreglo; sino, se realiza sólo de las que han sido especificadas.
 if [ "$#" = "0" ]; then
-	for config_file in `ls -I "_*"`
-	do
-		$0 "$config_files/$config_file"
-	done
-	exit 1
+    for config_file in `ls -I "_*"`
+    do
+        $0 "$config_files/$config_file"
+    done
+    exit 1
 fi
 
 if [ ! -f "$1" ]; then
-	echo "File $1 not exists!"
-	exit 1
+    echo "File $1 not exists!"
+    exit 1
 fi
 project_name=`jq -r ".project_name" $1`
 project_path=`jq -r ".project_path" $1`
@@ -40,7 +40,7 @@ echo "------------ Checking image references in $project_folder"
 
 # Directorio temporal
 if [ ! -d "$temp_dir" ]; then
-	mkdir -p "$temp_dir"
+    mkdir -p "$temp_dir"
 fi
 cd $temp_dir
 
@@ -70,6 +70,6 @@ find . -name '*.jpg' ! -path './files/*' | sed -E 's/\.\///g' >> $temp_dir/image
 sort -u -o $temp_dir/images.txt $temp_dir/images.txt
 difference=`diff -y --suppress-common-lines $temp_dir/referenced_images.txt $temp_dir/images.txt`
 if [ "$difference" != "" ]; then
-	echo -e "REQUIRED\t\t\t\t\t\t\tUNNECESSARY"
-	diff -y --suppress-common-lines $temp_dir/referenced_images.txt $temp_dir/images.txt
+    echo -e "REQUIRED\t\t\t\t\t\t\tUNNECESSARY"
+    diff -y --suppress-common-lines $temp_dir/referenced_images.txt $temp_dir/images.txt
 fi
