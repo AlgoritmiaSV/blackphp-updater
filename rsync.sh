@@ -11,6 +11,7 @@ upload()
             --exclude 'config.php' \
             --exclude 'entities/' \
             --exclude 'db/' \
+            --exclude 'manuales.algoritmia.sv/' \
             $2 $6@$4:$3
     else
         rsync -crv -e "ssh -p $5" --delete \
@@ -19,6 +20,7 @@ upload()
             --exclude 'db/' \
             --exclude 'node_modules/' \
             --exclude 'vendor/' \
+            --exclude 'manuales.algoritmia.sv/' \
             $2 $6@$4:$3
     fi
     echo Completed Succefully!
